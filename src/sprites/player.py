@@ -1,5 +1,5 @@
-import pygame
 import os
+import pygame
 
 
 dirname = os.path.dirname(__file__)
@@ -17,3 +17,7 @@ class Player(pygame.sprite.Sprite):
 
         print(self.rect.x)
         print(self.rect.y)
+
+    def update(self, pos):
+        self.rect.x += pos[0]
+        self.rect.y += pos[1]

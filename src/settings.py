@@ -1,7 +1,7 @@
 level_map = [
 '                    ',
 '                    ',
-'                    ',    
+'                    ',
 '                    ',
 '                    ',
 '00      000         ',
@@ -11,6 +11,6 @@ level_map = [
 '000000000000000    0'
 ]
 
-tile_size = 16
-screen_width = 256
-screen_height = len(level_map) * tile_size
+TILE_SIZE = 16
+SCREEN_WIDTH = 256
+SCREEN_HEIGHT = len(level_map) * TILE_SIZE

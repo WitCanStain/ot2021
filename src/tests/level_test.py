@@ -1,11 +1,12 @@
-import pygame
 import unittest
+import pygame
+
 from level import Level
 from settings import *
 class TestLevel(unittest.TestCase):
     def setUp(self):
         pygame.init()
-        screen = pygame.display.set_mode((screen_width, screen_height))  
+        screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.level = Level(level_map, screen)
 
 

@@ -11,6 +11,8 @@ invoke = "^1.6.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
+coverage = "^6.2"
+pylint = "^2.12.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
