@@ -21,7 +21,8 @@ class Level:
 
 
     def move_player(self, pos):
-        self.player.update(pos)
+        if self.check_collision(self.player, self.tiles, pos):
+            self.player.update(pos)
 
     def create(self, level_map):
         self.tiles = pygame.sprite.Group()
@@ -41,6 +42,16 @@ class Level:
                     self.player = Player((norm_x, norm_y))
 
         self.all_sprites.add(self.tiles, self.player)
+
+
+    def check_collision(self, actor_sprite, tile_sprite, pos):
+        actor_sprite.update(pos)
+        sprite_collides = pygame.sprite.spritecollide(actor_sprite, tile_sprite, False)
+        actor_sprite.update((-pos[0], -pos[1]))
+        return not sprite_collides
+
+
+
 
     def get_player(self):
         return self.player
