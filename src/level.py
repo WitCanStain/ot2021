@@ -1,5 +1,5 @@
 import pygame
-from sprites.tiles import Tile
+from sprites.tile import Tile
 from sprites.player import Player
 from settings import TILE_SIZE
 
@@ -16,7 +16,7 @@ class Level:
 
 
     def draw(self):
-        self.tiles.update(0)
+        self.tiles.update()
         self.all_sprites.draw(self.display_surface)
 
 
