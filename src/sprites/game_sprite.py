@@ -6,6 +6,9 @@ class GameSprite(pygame.sprite.Sprite):
         self.image = pygame.image.load(path)
         self.rect = self.image.get_rect(topleft = pos)
 
-    def update(self, pos):
-        self.rect.x += pos[0]
-        self.rect.y += pos[1]
+    def update(self, pos=pygame.Vector2()):
+        self.rect.x += pos.x
+        self.rect.y += pos.y
+    
+    def get_rect(self):
+        return self.rect

@@ -1,7 +1,8 @@
 import pygame
+from pygame import Vector2
 from sprites.tile import Tile
 from sprites.player import Player
-from settings import TILE_SIZE
+from settings import TILE_SIZE, GRAVITY
 
 class Level:
     def __init__(self, level_map, surface):
@@ -17,12 +18,31 @@ class Level:
 
     def draw(self):
         self.tiles.update()
+        
         self.all_sprites.draw(self.display_surface)
 
 
-    def move_player(self, pos):
-        if self.check_collision(self.player, self.tiles, pos):
+    def move_player(self, velocity):
+        if not self.sprite_touches_floor(self.player):
+            self.set_velocity(self.player.get_velocity() + Vector2(velocity.x, GRAVITY))
+        else:
+            self.set_velocity(self.player.get_velocity() + Vector2(velocity.x, 0))
+
+    def set_velocity(self, pos):
+        sprite_collisions = self.sprite_collides(self.player, self.tiles, pos)
+        if not sprite_collisions:
             self.player.update(pos)
+        else:
+            for sprite in sprite_collisions:
+                rect = sprite.get_rect()
+                sprite_topleft_y = rect.topleft[1]
+                player_bottomleft_y = self.player.get_rect().bottomleft[1]
+                
+                if sprite_topleft_y > player_bottomleft_y:
+                    new_pos = Vector2(0, sprite_topleft_y - player_bottomleft_y)
+                    if not self.sprite_collides(self.player, self.tiles, new_pos):
+                        self.player.update(new_pos)
+
 
     def create(self, level_map):
         self.tiles = pygame.sprite.Group()
@@ -44,12 +64,14 @@ class Level:
         self.all_sprites.add(self.tiles, self.player)
 
 
-    def check_collision(self, actor_sprite, tile_sprite, pos):
+    def sprite_collides(self, actor_sprite, tile_sprite, pos):
         actor_sprite.update(pos)
-        sprite_collides = pygame.sprite.spritecollide(actor_sprite, tile_sprite, False)
-        actor_sprite.update((-pos[0], -pos[1]))
-        return not sprite_collides
+        sprite_collisions = pygame.sprite.spritecollide(actor_sprite, tile_sprite, False)
+        actor_sprite.update(-pos)
+        return sprite_collisions
 
+    def sprite_touches_floor(self, sprite):
+        return self.sprite_collides(sprite, self.tiles, Vector2(0, 2))
 
 
 

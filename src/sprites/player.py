@@ -1,12 +1,15 @@
 import os
-from sprites.game_sprite import GameSprite
+import pygame
+from sprites.actor_sprite import ActorSprite
 
 dirname = os.path.dirname(__file__)
 
-class Player(GameSprite):
+class Player(ActorSprite):
     def __init__(self, pos):
         path = os.path.join(dirname, "..", "assets", "ot_player_stand.png")
-        super().__init__(pos, path)
+        self.max_speed = 6
+        super().__init__(pos, path, max_speed)
+        
 
-    def update(self, pos):
-        super().update(pos)
+    
+
