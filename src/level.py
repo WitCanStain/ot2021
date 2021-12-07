@@ -18,30 +18,44 @@ class Level:
 
     def draw(self):
         self.tiles.update()
-        
+        # self.move_player(Vector2(0, GRAVITY))
         self.all_sprites.draw(self.display_surface)
 
 
-    def move_player(self, velocity):
-        if not self.sprite_touches_floor(self.player):
-            self.set_velocity(self.player.get_velocity() + Vector2(velocity.x, GRAVITY))
-        else:
-            self.set_velocity(self.player.get_velocity() + Vector2(velocity.x, 0))
+    def move_player(self, direction):
+        
+        updated_pos = self.check_collision_and_correct(self.player, self.tiles, direction)
+        self.player.update(updated_pos)
+        
 
-    def set_velocity(self, pos):
-        sprite_collisions = self.sprite_collides(self.player, self.tiles, pos)
-        if not sprite_collisions:
-            self.player.update(pos)
-        else:
+    def check_collision_and_correct(self, actor_sprite, sprites, direction):
+        new_direction = Vector2(direction.x, direction.y)
+        actor_sprite_left, actor_sprite_top, actor_sprite_right, actor_sprite_bottom = actor_sprite.get_bounds()
+        
+        # horizontal collision check
+        actor_sprite.update_pos(Vector2(direction.x, 0))
+        sprite_collisions = pygame.sprite.spritecollide(actor_sprite, sprites, False)
+        if sprite_collisions:
             for sprite in sprite_collisions:
-                rect = sprite.get_rect()
-                sprite_topleft_y = rect.topleft[1]
-                player_bottomleft_y = self.player.get_rect().bottomleft[1]
+                sprite_left, sprite_top, sprite_right, sprite_bottom = sprite.get_bounds()
+                if direction.x > 0:
+                    new_direction.x = sprite_left - actor_sprite_right
+                elif direction.x < 0:
+                    new_direction.x = sprite_right - actor_sprite_left
                 
-                if sprite_topleft_y > player_bottomleft_y:
-                    new_pos = Vector2(0, sprite_topleft_y - player_bottomleft_y)
-                    if not self.sprite_collides(self.player, self.tiles, new_pos):
-                        self.player.update(new_pos)
+        # vertical collision check
+        actor_sprite.update_pos(Vector2(-direction.x, direction.y))
+        sprite_collisions = pygame.sprite.spritecollide(actor_sprite, sprites, False)
+        if sprite_collisions:
+            for sprite in sprite_collisions:
+                sprite_left, sprite_top, sprite_right, sprite_bottom = sprite.get_bounds()
+                if direction.y > 0:
+                    new_direction.y = sprite_top - actor_sprite_bottom
+                elif direction.y < 0:
+                    new_direction.y = sprite_bottom - actor_sprite_top
+        
+        actor_sprite.update_pos(Vector2(0, -direction.y))
+        return new_direction
 
 
     def create(self, level_map):
@@ -57,22 +71,11 @@ class Level:
                 cell = level_map[y][x]
 
                 if cell == '0':
-                    self.tiles.add(Tile((norm_x, norm_y)))
+                    self.tiles.add(Tile(Vector2(norm_x, norm_y)))
                 elif cell == '1':
-                    self.player = Player((norm_x, norm_y))
+                    self.player = Player(Vector2(norm_x, norm_y))
 
         self.all_sprites.add(self.tiles, self.player)
-
-
-    def sprite_collides(self, actor_sprite, tile_sprite, pos):
-        actor_sprite.update(pos)
-        sprite_collisions = pygame.sprite.spritecollide(actor_sprite, tile_sprite, False)
-        actor_sprite.update(-pos)
-        return sprite_collisions
-
-    def sprite_touches_floor(self, sprite):
-        return self.sprite_collides(sprite, self.tiles, Vector2(0, 2))
-
 
 
     def get_player(self):

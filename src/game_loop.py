@@ -25,18 +25,18 @@ class GameLoop:
     def handle_events(self):
         keys = pygame.key.get_pressed()
         if keys[K_LEFT]:
-            self.level.set_velocity(Vector2(-1, 0))
+            self.level.move_player(Vector2(-1, 0))
         if keys[K_RIGHT]:
-            self.level.set_velocity(Vector2(1, 0))
+            self.level.move_player(Vector2(1, 0))
         if keys[K_DOWN]:
-            self.level.set_velocity(Vector2(0, 2))
+            self.level.move_player(Vector2(0, 2))
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
-                    self.level.set_velocity(Vector2(0, -10))
+                    self.level.move_player(Vector2(0, -10))
             elif event.type == pygame.KEYUP:
                 if event.key in [pygame.K_LEFT, pygame.K_RIGHT]:
-                    self.level.set_velocity(Vector2())
+                    self.level.move_player(-self.level.player.get_direction())
             elif event.type == VIDEORESIZE:
                 self.screen = pygame.display.set_mode(event.size, HWSURFACE|DOUBLEBUF|RESIZABLE)
             elif event.type == pygame.QUIT:
