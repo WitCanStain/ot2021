@@ -6,3 +6,5 @@ Projektin voi suorittaa ajamalla komento `poetry run invoke start`. Pelihahmoa v
 [vaatimusmäärittely](https://github.com/WitCanStain/ot2021/blob/master/documentation/vaatimusmaarittely.md)
 
 [arkkitehtuuri](https://github.com/WitCanStain/ot2021/blob/master/documentation/architecture.md)
+
+[Viikon 5 release](https://github.com/WitCanStain/ot2021/releases/tag/viikko5b)
