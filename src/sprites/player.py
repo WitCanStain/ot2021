@@ -8,7 +8,8 @@ class Player(ActorSprite):
     def __init__(self, pos):
         path = os.path.join(dirname, "..", "assets", "ot_player_stand.png")
         max_speed = 3
-        super().__init__(pos, path, max_speed)
+        max_jump_speed = 50
+        super().__init__(pos, path, max_speed, max_jump_speed)
         
 
     

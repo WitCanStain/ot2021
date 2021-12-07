@@ -18,7 +18,7 @@ class Level:
 
     def draw(self):
         self.tiles.update()
-        # self.move_player(Vector2(0, GRAVITY))
+        self.move_player(Vector2(0, GRAVITY))
         self.all_sprites.draw(self.display_surface)
 
 

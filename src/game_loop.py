@@ -33,10 +33,10 @@ class GameLoop:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
-                    self.level.move_player(Vector2(0, -10))
-            elif event.type == pygame.KEYUP:
-                if event.key in [pygame.K_LEFT, pygame.K_RIGHT]:
-                    self.level.move_player(-self.level.player.get_direction())
+                    self.level.move_player(Vector2(0, -30))
+            # elif event.type == pygame.KEYUP:
+            #     if event.key in [pygame.K_LEFT, pygame.K_RIGHT]:
+            #         self.level.move_player(-self.level.player.get_direction())
             elif event.type == VIDEORESIZE:
                 self.screen = pygame.display.set_mode(event.size, HWSURFACE|DOUBLEBUF|RESIZABLE)
             elif event.type == pygame.QUIT:
