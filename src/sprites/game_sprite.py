@@ -13,7 +13,7 @@ class GameSprite(pygame.sprite.Sprite):
 
     def get_pos(self):
         return Vector2(self.rect.x, self.rect.y)
-    
+
     def get_rect(self):
         return self.rect
 

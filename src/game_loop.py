@@ -1,5 +1,5 @@
 import pygame
-from pygame.locals import *
+from pygame.locals import HWSURFACE, DOUBLEBUF, RESIZABLE, VIDEORESIZE, K_LEFT, K_RIGHT, K_DOWN
 from pygame import Vector2
 from settings import SCREEN_HEIGHT, SCREEN_WIDTH, level_map
 from level import Level
@@ -44,7 +44,7 @@ class GameLoop:
         return True
 
     def render(self):
-        self.fake_screen.fill('black')        
+        self.fake_screen.fill('black')
         self.level.draw()
         self.screen.blit(pygame.transform.scale(self.fake_screen, self.screen.get_rect().size), (0, 0))
         pygame.display.update()

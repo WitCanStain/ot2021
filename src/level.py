@@ -23,40 +23,42 @@ class Level:
 
 
     def move_player(self, direction):
-        
+
         updated_pos = self.check_collision_and_correct(self.player, self.tiles, direction)
         self.player.update(updated_pos)
-        
 
-    def check_collision_and_correct(self, actor_sprite, sprites, direction):
-        new_direction = Vector2(direction.x, direction.y)
-        actor_sprite_left, actor_sprite_top, actor_sprite_right, actor_sprite_bottom = actor_sprite.get_bounds()
-        
+
+    def check_collision_and_correct(self, actor, sprites, direction):
+        corrected_direction = Vector2(direction.x, direction.y)
+        actor_left, actor_top, actor_right, actor_bottom = actor.get_bounds()
+
         # horizontal collision check
-        actor_sprite.update_pos(Vector2(direction.x, 0))
-        sprite_collisions = pygame.sprite.spritecollide(actor_sprite, sprites, False)
+        sprite_collisions = self.check_collision(actor, sprites, Vector2(direction.x, 0))
         if sprite_collisions:
             for sprite in sprite_collisions:
                 sprite_left, sprite_top, sprite_right, sprite_bottom = sprite.get_bounds()
                 if direction.x > 0:
-                    new_direction.x = sprite_left - actor_sprite_right
+                    corrected_direction.x = sprite_left - actor_right
                 elif direction.x < 0:
-                    new_direction.x = sprite_right - actor_sprite_left
-                
+                    corrected_direction.x = sprite_right - actor_left
+
         # vertical collision check
-        actor_sprite.update_pos(Vector2(-direction.x, direction.y))
-        sprite_collisions = pygame.sprite.spritecollide(actor_sprite, sprites, False)
+        sprite_collisions = self.check_collision(actor, sprites, Vector2(0, direction.y))
         if sprite_collisions:
             for sprite in sprite_collisions:
                 sprite_left, sprite_top, sprite_right, sprite_bottom = sprite.get_bounds()
                 if direction.y > 0:
-                    new_direction.y = sprite_top - actor_sprite_bottom
+                    corrected_direction.y = sprite_top - actor_bottom
                 elif direction.y < 0:
-                    new_direction.y = sprite_bottom - actor_sprite_top
-        
-        actor_sprite.update_pos(Vector2(0, -direction.y))
-        return new_direction
+                    corrected_direction.y = sprite_bottom - actor_top
 
+        return corrected_direction
+
+    def check_collision(self, actor, sprites, direction):
+        actor.update_pos(direction)
+        sprite_collisions = pygame.sprite.spritecollide(actor, sprites, False)
+        actor.update_pos(-direction)
+        return sprite_collisions
 
     def create(self, level_map):
         self.tiles = pygame.sprite.Group()
