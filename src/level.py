@@ -46,6 +46,7 @@ class Level:
     def move_sprite(self, sprite, direction):
         velocity = sprite.get_velocity()
         direction = sprite.check_speed(direction)
+
         
         # horizontal collision check
         sprite_collisions = self.check_collision(sprite, self.tiles, Vector2(direction.x, 0))

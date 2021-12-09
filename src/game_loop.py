@@ -45,7 +45,7 @@ class GameLoop:
         return True
 
     def render(self):
-        self.fake_screen.fill('black')
+        self.fake_screen.fill((135, 206, 250))
         self.level.draw()
         self.screen.blit(pygame.transform.scale(self.fake_screen, self.screen.get_rect().size), (0, 0))
         pygame.display.update()
