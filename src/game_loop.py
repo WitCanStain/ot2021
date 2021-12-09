@@ -26,9 +26,9 @@ class GameLoop:
     def handle_events(self):
         keys = pygame.key.get_pressed()
         if keys[K_LEFT]:
-            self.level.move_sprite(self.player, Vector2(-1, 0))
+            self.level.move_sprite(self.player, Vector2(-2, 0))
         if keys[K_RIGHT]:
-            self.level.move_sprite(self.player, Vector2(1, 0))
+            self.level.move_sprite(self.player, Vector2(2, 0))
         if keys[K_DOWN]:
             self.level.move_sprite(self.player, Vector2(0, 2))
         for event in pygame.event.get():

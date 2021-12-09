@@ -47,7 +47,12 @@ class Level:
         velocity = sprite.get_velocity()
         direction = sprite.check_speed(direction)
 
-        
+        # setting sprite orientation
+        if direction.x > 0:
+            sprite.image = sprite.img_left
+        elif direction.x < 0:
+            sprite.image = sprite.img_right
+
         # horizontal collision check
         sprite_collisions = self.check_collision(sprite, self.tiles, Vector2(direction.x, 0))
         if sprite_collisions:

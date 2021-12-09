@@ -6,6 +6,8 @@ class GameSprite(pygame.sprite.Sprite):
     def __init__(self, pos, path, collides=True):
         super().__init__()
         self.image = pygame.image.load(path)
+        self.img_left = self.image
+        self.img_right = pygame.transform.flip(self.img_left, True, False)
         self.rect = self.image.get_rect(topleft = pos)
         self.collides = collides
         self.active = True
