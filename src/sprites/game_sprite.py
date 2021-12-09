@@ -20,7 +20,7 @@ class GameSprite(pygame.sprite.Sprite):
         self.rect.x += round(direction.x)
         self.rect.y += round(direction.y)
         
-    def update(self):
+    def update(self, direction=Vector2()):
         self.rect.x = round(self._left)
         self.rect.y = round(self._top)
         

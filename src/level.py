@@ -15,19 +15,25 @@ class Level:
         self.tiles = pygame.sprite.Group()
         self.coins = pygame.sprite.Group()
         self.mobs = pygame.sprite.Group()
-        self.game_objects = pygame.sprite.Group()
+        self.interactive_objects = pygame.sprite.Group()
+        self.non_player_objects = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
-
+        self.camera_direction = Vector2()
         self.create(level_map)
 
 
     def draw(self):
         # self.tiles.update()
-        self.apply_gravity(self.game_objects)
+        self.apply_gravity(self.interactive_objects)
         self.collect_coins(self.player)
         self.mob_collide()
+
+        for sprite in self.all_sprites:
+            sprite.left += self.camera_direction.x
+            sprite.top += self.camera_direction.y
         self.all_sprites.update()
-        for sprite in self.game_objects:
+        self.camera_direction = Vector2()
+        for sprite in self.interactive_objects:
             if sprite.off_screen() and not sprite.active:
                 sprite.kill()
         self.all_sprites.draw(self.display_surface)
@@ -46,7 +52,7 @@ class Level:
     def move_sprite(self, sprite, direction):
         velocity = sprite.get_velocity()
         direction = sprite.check_speed(direction)
-
+        rectified_direction = Vector2(direction.x, direction.y)
         # setting sprite orientation
         if direction.x > 0:
             sprite.image = sprite.img_left
@@ -59,8 +65,12 @@ class Level:
             sprite.update_velocity(Vector2(-velocity.x, 0))
             for coll_sprite in sprite_collisions:
                 if direction.x > 0:
+                    # direction.x = coll_sprite.left - sprite.right
+                    rectified_direction.x = coll_sprite.left - sprite.right
                     sprite.right = coll_sprite.left
                 elif direction.x < 0:
+                    # direction.x = sprite.left - coll_sprite.right
+                    rectified_direction.x = sprite.left - coll_sprite.right
                     sprite.left = coll_sprite.right
         else:
             sprite.left += direction.x
@@ -70,12 +80,16 @@ class Level:
             sprite.update_velocity(Vector2(0, -velocity.y))
             for coll_sprite in sprite_collisions:
                 if direction.y > 0:
+                    rectified_direction.y = coll_sprite.top - sprite.bottom
                     sprite.bottom = coll_sprite.top
                 elif direction.y < 0:
+                    rectified_direction.y = coll_sprite.bottom - sprite.top
                     sprite.top = coll_sprite.bottom
             
         else:
             sprite.bottom += direction.y
+        return rectified_direction
+
 
 
     def collect_coins(self, sprite, direction=Vector2()):
@@ -138,9 +152,20 @@ class Level:
                 elif cell == '3':
                     self.mobs.add(Mob(Vector2(norm_x, norm_y)))
 
-        self.game_objects.add(self.player, self.coins, self.mobs)
-        self.all_sprites.add(self.tiles, self.game_objects)
+        self.interactive_objects.add(self.player, self.coins, self.mobs)
+        self.non_player_objects.add(self.coins, self.tiles, self.mobs)
+        self.all_sprites.add(self.player, self.non_player_objects)
 
+
+    def move_player_left(self):
+        direction = Vector2(-2, 0)
+        rectified_direction = self.move_sprite(self.player, direction)
+        self.camera_direction = -rectified_direction
+
+    def move_player_right(self):
+        direction = Vector2(2, 0)
+        rectified_direction = self.move_sprite(self.player, direction)
+        self.camera_direction = -rectified_direction
 
     def get_player(self):
         return self.player
