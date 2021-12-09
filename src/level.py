@@ -3,6 +3,8 @@ from pygame import Vector2
 from sprites.tile import Tile
 from sprites.player import Player
 from sprites.coin import Coin
+from sprites.mob import Mob
+from sounds import collect_coin, player_death, mob_death
 from settings import TILE_SIZE, GRAVITY
 
 class Level:
@@ -12,6 +14,8 @@ class Level:
         self.player = None
         self.tiles = pygame.sprite.Group()
         self.coins = pygame.sprite.Group()
+        self.mobs = pygame.sprite.Group()
+        self.game_objects = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
 
         self.create(level_map)
@@ -19,16 +23,21 @@ class Level:
 
     def draw(self):
         # self.tiles.update()
-        self.apply_gravity(self.player)
-        self.coin_collide(self.player)
+        self.apply_gravity(self.game_objects)
+        self.collect_coins(self.player)
+        self.mob_collide(self.player)
         self.all_sprites.update()
+        for sprite in self.game_objects:
+            if sprite.off_screen() and not sprite.active:
+                sprite.kill()
         self.all_sprites.draw(self.display_surface)
 
 
-    def apply_gravity(self, sprite):
-        sprite.update_velocity(Vector2(0, GRAVITY))
-        velocity = sprite.get_velocity()
-        self.move_sprite(sprite, Vector2(velocity.x, velocity.y))
+    def apply_gravity(self, sprites):
+        for sprite in sprites:
+            sprite.update_velocity(Vector2(0, GRAVITY))
+            velocity = sprite.get_velocity()
+            self.move_sprite(sprite, Vector2(velocity.x, velocity.y))
 
     def sprite_jump(self, sprite):
         if self.sprite_touches_floor(sprite):
@@ -37,42 +46,67 @@ class Level:
     def move_sprite(self, sprite, direction):
         velocity = sprite.get_velocity()
         direction = sprite.check_speed(direction)
-        # horizontal collision check
-        sprite_collisions = self.check_collision(sprite, self.tiles, Vector2(direction.x, 0))
-        if sprite_collisions:
-            sprite.update_velocity(Vector2(-velocity.x, 0))
-            for coll_sprite in sprite_collisions:
-                if direction.x > 0:
-                    sprite.right = coll_sprite.left
-                elif direction.x < 0:
-                    sprite.left = coll_sprite.right
+        if sprite.collides:
+            # horizontal collision check
+            sprite_collisions = self.check_collision(sprite, self.tiles, Vector2(direction.x, 0))
+            if sprite_collisions:
+                sprite.update_velocity(Vector2(-velocity.x, 0))
+                for coll_sprite in sprite_collisions:
+                    if direction.x > 0:
+                        sprite.right = coll_sprite.left
+                    elif direction.x < 0:
+                        sprite.left = coll_sprite.right
+            else:
+                sprite.left += direction.x
+            # vertical collision check
+            sprite_collisions = self.check_collision(sprite, self.tiles, Vector2(0, direction.y))
+            if sprite_collisions:
+                sprite.update_velocity(Vector2(0, -velocity.y))
+                for coll_sprite in sprite_collisions:
+                    if direction.y > 0:
+                        sprite.bottom = coll_sprite.top
+                    elif direction.y < 0:
+                        sprite.top = coll_sprite.bottom
+                
+            else:
+                sprite.bottom += direction.y
         else:
             sprite.left += direction.x
-        # vertical collision check
-        sprite_collisions = self.check_collision(sprite, self.tiles, Vector2(0, direction.y))
-        if sprite_collisions:
-            sprite.update_velocity(Vector2(0, -velocity.y))
-            for coll_sprite in sprite_collisions:
-                if direction.y > 0:
-                    sprite.bottom = coll_sprite.top
-                elif direction.y < 0:
-                    sprite.top = coll_sprite.bottom
-            
-        else:
             sprite.bottom += direction.y
+
         
 
-    def coin_collide(self, sprite, direction=Vector2()):
+        
+
+    def collect_coins(self, sprite, direction=Vector2()):
         sprite_collisions = self.check_collision(sprite, self.coins, direction)
         if sprite_collisions:
             for coin in sprite_collisions:
                 self.player.coins += 1
-                coin.kill()
+                pygame.mixer.Sound.play(collect_coin)
+                self.kill_sprite(coin)
 
+    def mob_collide(self, sprite, direction=Vector2()):
+        sprite_collisions = self.check_collision(sprite, self.mobs, direction)
+        if sprite_collisions:
+            for mob in sprite_collisions:
+                if self.player.attack != True:
+                    pygame.mixer.Sound.play(player_death)
+                    self.kill_sprite(self.player)
+                else:
+                    pygame.mixer.Sound.play(mob_death)
+                    self.kill_sprite(mob)
+
+
+    def kill_sprite(self, sprite):
+        sprite.active = False
+        sprite.collides = False
+        sprite.update_velocity(Vector2(0, -7))
 
     def check_collision(self, colliding_sprite, sprites, direction=Vector2()):
         colliding_sprite.update_pos(direction)
-        sprite_collisions = pygame.sprite.spritecollide(colliding_sprite, sprites, False)
+        collidable_sprites = filter(self.sprite_collides, sprites)
+        sprite_collisions = pygame.sprite.spritecollide(colliding_sprite, collidable_sprites, False)
         colliding_sprite.update_pos(-direction)
         return sprite_collisions
 
@@ -99,9 +133,11 @@ class Level:
                     self.player = Player(Vector2(norm_x, norm_y))
                 elif cell == '2':
                     self.coins.add(Coin(Vector2(norm_x, norm_y)))
+                elif cell == '3':
+                    self.mobs.add(Mob(Vector2(norm_x, norm_y)))
 
-
-        self.all_sprites.add(self.tiles, self.coins, self.player)
+        self.game_objects.add(self.player, self.coins, self.mobs)
+        self.all_sprites.add(self.tiles, self.game_objects)
 
 
     def get_player(self):
@@ -109,3 +145,6 @@ class Level:
 
     def get_all_sprites(self):
         return self.all_sprites
+
+    def sprite_collides(self, sprite):
+        return sprite.collides

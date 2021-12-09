@@ -1,11 +1,14 @@
 import pygame
 from pygame import Vector2
+from settings import SCREEN_WIDTH, SCREEN_HEIGHT
 
 class GameSprite(pygame.sprite.Sprite):
-    def __init__(self, pos, path):
+    def __init__(self, pos, path, collides=True):
         super().__init__()
         self.image = pygame.image.load(path)
         self.rect = self.image.get_rect(topleft = pos)
+        self.collides = collides
+        self.active = True
         self._left = self.rect.topleft[0]
         self._top = self.rect.topleft[1]
         self._right = self.rect.bottomright[0]
@@ -19,6 +22,11 @@ class GameSprite(pygame.sprite.Sprite):
         self.rect.x = round(self._left)
         self.rect.y = round(self._top)
         
+    def off_screen(self):
+        if self._right < 0 or self._left > SCREEN_WIDTH or self._top < 0 or self._bottom > SCREEN_HEIGHT:
+            return True
+        return False
+
     @property
     def left(self):
         return self._left

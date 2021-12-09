@@ -2,8 +2,8 @@ from pygame import Vector2
 from sprites.game_sprite import GameSprite
 
 class ActorSprite(GameSprite):
-    def __init__(self, pos, path, max_speed):
-        super().__init__(pos, path)
+    def __init__(self, pos, path, max_speed=0, collides=True):
+        super().__init__(pos, path, collides)
         self.velocity = Vector2()
         self.max_speed = max_speed
         self.max_fall_speed = 10
