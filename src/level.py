@@ -25,7 +25,7 @@ class Level:
         # self.tiles.update()
         self.apply_gravity(self.game_objects)
         self.collect_coins(self.player)
-        self.mob_collide(self.player)
+        self.mob_collide()
         self.all_sprites.update()
         for sprite in self.game_objects:
             if sprite.off_screen() and not sprite.active:
@@ -41,42 +41,36 @@ class Level:
 
     def sprite_jump(self, sprite):
         if self.sprite_touches_floor(sprite):
-            self.player.update_velocity(Vector2(0, -10))
+            sprite.update_velocity(Vector2(0, -10))
 
     def move_sprite(self, sprite, direction):
         velocity = sprite.get_velocity()
         direction = sprite.check_speed(direction)
-        if sprite.collides:
-            # horizontal collision check
-            sprite_collisions = self.check_collision(sprite, self.tiles, Vector2(direction.x, 0))
-            if sprite_collisions:
-                sprite.update_velocity(Vector2(-velocity.x, 0))
-                for coll_sprite in sprite_collisions:
-                    if direction.x > 0:
-                        sprite.right = coll_sprite.left
-                    elif direction.x < 0:
-                        sprite.left = coll_sprite.right
-            else:
-                sprite.left += direction.x
-            # vertical collision check
-            sprite_collisions = self.check_collision(sprite, self.tiles, Vector2(0, direction.y))
-            if sprite_collisions:
-                sprite.update_velocity(Vector2(0, -velocity.y))
-                for coll_sprite in sprite_collisions:
-                    if direction.y > 0:
-                        sprite.bottom = coll_sprite.top
-                    elif direction.y < 0:
-                        sprite.top = coll_sprite.bottom
-                
-            else:
-                sprite.bottom += direction.y
+        
+        # horizontal collision check
+        sprite_collisions = self.check_collision(sprite, self.tiles, Vector2(direction.x, 0))
+        if sprite_collisions:
+            sprite.update_velocity(Vector2(-velocity.x, 0))
+            for coll_sprite in sprite_collisions:
+                if direction.x > 0:
+                    sprite.right = coll_sprite.left
+                elif direction.x < 0:
+                    sprite.left = coll_sprite.right
         else:
             sprite.left += direction.x
+        # vertical collision check
+        sprite_collisions = self.check_collision(sprite, self.tiles, Vector2(0, direction.y))
+        if sprite_collisions:
+            sprite.update_velocity(Vector2(0, -velocity.y))
+            for coll_sprite in sprite_collisions:
+                if direction.y > 0:
+                    sprite.bottom = coll_sprite.top
+                elif direction.y < 0:
+                    sprite.top = coll_sprite.bottom
+            
+        else:
             sprite.bottom += direction.y
 
-        
-
-        
 
     def collect_coins(self, sprite, direction=Vector2()):
         sprite_collisions = self.check_collision(sprite, self.coins, direction)
@@ -84,26 +78,28 @@ class Level:
             for coin in sprite_collisions:
                 self.player.coins += 1
                 pygame.mixer.Sound.play(collect_coin)
-                self.kill_sprite(coin)
+                self.deactivate_sprite(coin)
 
-    def mob_collide(self, sprite, direction=Vector2()):
-        sprite_collisions = self.check_collision(sprite, self.mobs, direction)
+    def mob_collide(self, direction=Vector2()):
+        sprite_collisions = self.check_collision(self.player, self.mobs, direction)
         if sprite_collisions:
             for mob in sprite_collisions:
                 if self.player.attack != True:
                     pygame.mixer.Sound.play(player_death)
-                    self.kill_sprite(self.player)
+                    self.deactivate_sprite(self.player)
                 else:
                     pygame.mixer.Sound.play(mob_death)
-                    self.kill_sprite(mob)
+                    self.deactivate_sprite(mob)
 
 
-    def kill_sprite(self, sprite):
+    def deactivate_sprite(self, sprite):
         sprite.active = False
         sprite.collides = False
         sprite.update_velocity(Vector2(0, -7))
 
     def check_collision(self, colliding_sprite, sprites, direction=Vector2()):
+        if not colliding_sprite.collides:
+            return False
         colliding_sprite.update_pos(direction)
         collidable_sprites = filter(self.sprite_collides, sprites)
         sprite_collisions = pygame.sprite.spritecollide(colliding_sprite, collidable_sprites, False)
