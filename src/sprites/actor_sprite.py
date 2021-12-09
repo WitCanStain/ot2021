@@ -9,13 +9,17 @@ class ActorSprite(GameSprite):
         self.max_fall_speed = 10
 
 
-    def update(self, direction=Vector2()):
+    def check_speed(self, direction=Vector2()):
         if abs(direction.x) > self.max_speed:
             direction.x = self.max_speed if direction.x > self.max_speed else -self.max_speed
-        if direction.y > self.max_fall_speed:
+        if abs(direction.y) > self.max_fall_speed:
             direction.y = self.max_fall_speed if direction.x > self.max_fall_speed else -self.max_fall_speed
 
-        super().update_pos(direction)
+        return direction
 
     def get_velocity(self):
         return self.velocity
+
+    def update_velocity(self, velocity):
+        self.velocity.x += velocity.x
+        self.velocity.y += velocity.y

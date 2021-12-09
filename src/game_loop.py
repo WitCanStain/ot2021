@@ -12,6 +12,7 @@ class GameLoop:
         self.fake_screen = self.screen.copy()
         self.clock = pygame.time.Clock()
         self.level = Level(level_map, self.fake_screen)
+        self.player = self.level.player
 
     def start(self):
         while True:
@@ -25,18 +26,18 @@ class GameLoop:
     def handle_events(self):
         keys = pygame.key.get_pressed()
         if keys[K_LEFT]:
-            self.level.move_player(Vector2(-1, 0))
+            self.level.move_sprite(self.player, Vector2(-1, 0))
         if keys[K_RIGHT]:
-            self.level.move_player(Vector2(1, 0))
+            self.level.move_sprite(self.player, Vector2(1, 0))
         if keys[K_DOWN]:
-            self.level.move_player(Vector2(0, 2))
+            self.level.move_sprite(self.player, Vector2(0, 2))
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
-                    self.level.move_player(Vector2(0, -30))
+                    self.level.sprite_jump(self.player)
             # elif event.type == pygame.KEYUP:
             #     if event.key in [pygame.K_LEFT, pygame.K_RIGHT]:
-            #         self.level.move_player(-self.level.player.get_direction())
+            #         self.level.move_sprite(-self.level.player.get_direction())
             elif event.type == VIDEORESIZE:
                 self.screen = pygame.display.set_mode(event.size, HWSURFACE|DOUBLEBUF|RESIZABLE)
             elif event.type == pygame.QUIT:
