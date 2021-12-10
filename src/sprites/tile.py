@@ -6,3 +6,4 @@ class Tile(GameSprite):
     def __init__(self, pos):
         path = os.path.join(dirname, "..", "assets", "ot_dirt.png")
         super().__init__(pos, path)
+        

@@ -36,6 +36,7 @@ class Level:
         for sprite in self.interactive_objects:
             if sprite.off_screen() and not sprite.active:
                 sprite.kill()
+
         self.all_sprites.draw(self.display_surface)
 
 
@@ -65,11 +66,9 @@ class Level:
             sprite.update_velocity(Vector2(-velocity.x, 0))
             for coll_sprite in sprite_collisions:
                 if direction.x > 0:
-                    # direction.x = coll_sprite.left - sprite.right
                     rectified_direction.x = coll_sprite.left - sprite.right
                     sprite.right = coll_sprite.left
                 elif direction.x < 0:
-                    # direction.x = sprite.left - coll_sprite.right
                     rectified_direction.x = sprite.left - coll_sprite.right
                     sprite.left = coll_sprite.right
         else:
@@ -88,6 +87,7 @@ class Level:
             
         else:
             sprite.bottom += direction.y
+
         return rectified_direction
 
 
@@ -155,7 +155,6 @@ class Level:
         self.interactive_objects.add(self.player, self.coins, self.mobs)
         self.non_player_objects.add(self.coins, self.tiles, self.mobs)
         self.all_sprites.add(self.player, self.non_player_objects)
-
 
     def move_player_left(self):
         direction = Vector2(-2, 0)
