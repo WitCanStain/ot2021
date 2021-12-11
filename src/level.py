@@ -1,6 +1,7 @@
 import pygame
 from pygame import Vector2
-from sprites.tile import Tile
+from numpy import sign
+from sprites.wall import Wall
 from sprites.player import Player
 from sprites.coin import Coin
 from sprites.mob import Mob
@@ -12,7 +13,6 @@ class Level:
         self.display_surface = surface
 
         self.player = None
-        self.tiles = pygame.sprite.Group()
         self.coins = pygame.sprite.Group()
         self.mobs = pygame.sprite.Group()
         self.interactive_objects = pygame.sprite.Group()
@@ -23,20 +23,21 @@ class Level:
 
 
     def draw(self):
-        # self.tiles.update()
+        # self.walls.update()
         self.apply_gravity(self.interactive_objects)
         self.collect_coins(self.player)
+        self.mob_move()
         self.mob_collide()
 
         for sprite in self.all_sprites:
             sprite.left += self.camera_direction.x
             sprite.top += self.camera_direction.y
-        self.all_sprites.update()
         self.camera_direction = Vector2()
         for sprite in self.interactive_objects:
             if sprite.off_screen() and not sprite.active:
                 sprite.kill()
 
+        self.all_sprites.update()
         self.all_sprites.draw(self.display_surface)
 
 
@@ -61,7 +62,7 @@ class Level:
             sprite.image = sprite.img_right
 
         # horizontal collision check
-        sprite_collisions = self.check_collision(sprite, self.tiles, Vector2(direction.x, 0))
+        sprite_collisions = self.check_collision(sprite, self.walls, Vector2(direction.x, 0))
         if sprite_collisions:
             sprite.update_velocity(Vector2(-velocity.x, 0))
             for coll_sprite in sprite_collisions:
@@ -74,7 +75,7 @@ class Level:
         else:
             sprite.left += direction.x
         # vertical collision check
-        sprite_collisions = self.check_collision(sprite, self.tiles, Vector2(0, direction.y))
+        sprite_collisions = self.check_collision(sprite, self.walls, Vector2(0, direction.y))
         if sprite_collisions:
             sprite.update_velocity(Vector2(0, -velocity.y))
             for coll_sprite in sprite_collisions:
@@ -99,6 +100,13 @@ class Level:
                 self.player.coins += 1
                 pygame.mixer.Sound.play(collect_coin)
                 self.deactivate_sprite(coin)
+
+    def mob_move(self):
+        for mob in self.mobs:
+            rectified_direction = self.move_sprite(mob, mob.direction)
+            self.move_sprite(mob, rectified_direction - mob.direction)
+            if sign(mob.direction.x) != sign(rectified_direction.x):
+                mob.direction = -mob.direction
 
     def mob_collide(self, direction=Vector2()):
         sprite_collisions = self.check_collision(self.player, self.mobs, direction)
@@ -127,12 +135,12 @@ class Level:
         return sprite_collisions
 
     def sprite_touches_floor(self, sprite):
-        if self.check_collision(sprite, self.tiles, Vector2(0, 1)):
+        if self.check_collision(sprite, self.walls, Vector2(0, 1)):
             return True
         return False
 
     def create(self, level_map):
-        self.tiles = pygame.sprite.Group()
+        self.walls = pygame.sprite.Group()
         height = len(level_map)
         width = len(level_map[0])
 
@@ -144,7 +152,7 @@ class Level:
                 cell = level_map[y][x]
 
                 if cell == '0':
-                    self.tiles.add(Tile(Vector2(norm_x, norm_y)))
+                    self.walls.add(Wall(Vector2(norm_x, norm_y)))
                 elif cell == '1':
                     self.player = Player(Vector2(norm_x, norm_y))
                 elif cell == '2':
@@ -153,7 +161,7 @@ class Level:
                     self.mobs.add(Mob(Vector2(norm_x, norm_y)))
 
         self.interactive_objects.add(self.player, self.coins, self.mobs)
-        self.non_player_objects.add(self.coins, self.tiles, self.mobs)
+        self.non_player_objects.add(self.coins, self.walls, self.mobs)
         self.all_sprites.add(self.player, self.non_player_objects)
 
     def move_player_left(self):
