@@ -2,11 +2,6 @@ level_map = [
 '                              ',
 '                              ',
 '                              ',
-'                              ',
-'                              ',
-'                              ',
-'                              ',
-'                              ',
 '                 000          ',
 '               000            ',
 '0       000                   ',
@@ -30,7 +25,9 @@ level_map2 = [
 ]
 
 TILE_SIZE = 16
-SCREEN_WIDTH = 400
-SCREEN_HEIGHT = len(level_map) * TILE_SIZE
+SCREEN_WIDTH = 320
+SCREEN_HEIGHT = 160
+BTN_WIDTH = 50
+BTN_HEIGHT = 12
 GRAVITY = 0.5
 

@@ -9,6 +9,7 @@ python = ">=3.9,<3.11"
 pygame = "^2.1.0"
 invoke = "^1.6.0"
 numpy = "^1.21.4"
+dill = "^0.3.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

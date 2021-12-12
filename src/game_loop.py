@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import HWSURFACE, DOUBLEBUF, RESIZABLE, VIDEORESIZE, K_LEFT, K_RIGHT, K_DOWN
 from pygame import Vector2
-from settings import SCREEN_HEIGHT, SCREEN_WIDTH, level_map
+from settings import SCREEN_WIDTH, SCREEN_HEIGHT, level_map
 from level import Level
 
 
@@ -9,10 +9,10 @@ class GameLoop:
     def __init__(self):
 
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), HWSURFACE|DOUBLEBUF|RESIZABLE)
+        pygame.display.set_caption("OT Platformer")
         self.fake_screen = self.screen.copy()
         self.clock = pygame.time.Clock()
         self.level = Level(level_map, self.fake_screen)
-        self.player = self.level.player
 
     def start(self):
         while True:
@@ -27,19 +27,24 @@ class GameLoop:
         keys = pygame.key.get_pressed()
         if keys[K_LEFT]:
             self.level.move_player_left()
-            
         if keys[K_RIGHT]:
             self.level.move_player_right()
-            # self.level.move_sprite(self.player, Vector2(2, 0))
-        if keys[K_DOWN]:
-            self.level.move_sprite(self.player, Vector2(0, 2))
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
-                    self.level.sprite_jump(self.player)
-            # elif event.type == pygame.KEYUP:
-            #     if event.key in [pygame.K_LEFT, pygame.K_RIGHT]:
-            #         self.level.move_sprite(-self.level.player.get_direction())
+                    self.level.player_jump()
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_ESCAPE:
+                    self.level.menu_toggle()
+                elif event.key == pygame.K_p:
+                    self.level.pause_toggle()
+            elif event.type == pygame.MOUSEBUTTONDOWN and self.level.menu_showing:
+                if event.button == 1:
+                    pos = event.pos
+                    ratio_x = self.screen.get_rect().width / self.fake_screen.get_rect().width
+                    ratio_y = self.screen.get_rect().height / self.fake_screen.get_rect().height
+                    scaled_pos = Vector2(pos[0] / ratio_x, pos[1] / ratio_y)
+                    self.level.button_clicked(scaled_pos)
             elif event.type == VIDEORESIZE:
                 self.screen = pygame.display.set_mode(event.size, HWSURFACE|DOUBLEBUF|RESIZABLE)
             elif event.type == pygame.QUIT:
