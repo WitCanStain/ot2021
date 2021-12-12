@@ -22,3 +22,11 @@ class ActorSprite(GameSprite):
 
     def update_velocity(self, velocity):
         self.velocity = self.check_speed(self.velocity + velocity)
+
+    def get_state(self):
+        data = {
+            "velocity": self.velocity,
+            "max_speed": self.max_speed,
+            "max_fall_speed": self.max_fall_speed
+        }
+        return super().get_state() | data

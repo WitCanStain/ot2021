@@ -68,3 +68,11 @@ class GameSprite(pygame.sprite.Sprite):
         y_shift = value - self._bottom
         self._bottom = value
         self._top += y_shift
+
+    def get_state(self):
+        state = {
+            "pos": self.rect.topleft,
+            "collides": self.collides,
+            "active": self.active,
+        }
+        return state

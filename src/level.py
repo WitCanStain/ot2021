@@ -7,13 +7,13 @@ from sprites.player import Player
 from sprites.coin import Coin
 from sprites.mob import Mob
 from sprites.button import Button
-from game_save import save
+from game_save import save_game
 from sounds import collect_coin, player_death, mob_death
 from settings import SCREEN_HEIGHT, SCREEN_WIDTH, BTN_WIDTH, BTN_HEIGHT, TILE_SIZE, GRAVITY
 
 
 class Level:
-    def __init__(self, level_map, surface):
+    def __init__(self, level_map, surface, game_state=None):
         self.surface = surface
         self.level_map = level_map
         self.player = None
@@ -28,7 +28,36 @@ class Level:
         self.pause_btn = None
         self.menu_showing = False
         self.paused = False
-        self.create(self.level_map)
+        if game_state:
+            self.set_state(game_state)
+        else:
+            self.create(self.level_map)
+
+    def set_state(self, game_state):
+
+        self.player = Player(game_state["player"]["pos"])
+        for attribute in game_state["player"]:
+            if attribute != "pos":
+                vars(self.player)[attribute] = game_state["player"][attribute]
+        
+        self.mobs.add(self.create_sprites_from_game_state(game_state["mobs"], Mob))
+        self.walls.add(self.create_sprites_from_game_state(game_state["walls"], Wall))
+        self.coins.add(self.create_sprites_from_game_state(game_state["coins"], Coin))
+
+        self.interactive_objects.add(self.player, self.coins, self.mobs)
+        self.all_sprites.add(self.walls, self.interactive_objects)
+        self.create_buttons()   
+
+    def create_sprites_from_game_state(self, sprite_state_list, Tile):
+        tiles = []
+        for saved_tile in sprite_state_list:
+            print(saved_tile)
+            tile = Tile(saved_tile["pos"])
+            for attribute in saved_tile:
+                if attribute != "pos":
+                    vars(tile)[attribute] = saved_tile[attribute]
+            tiles.append(tile)
+        return tiles
 
 
     def draw(self):
@@ -187,9 +216,12 @@ class Level:
                     self.mobs.add(Mob(Vector2(norm_x, norm_y)))
 
         self.interactive_objects.add(self.player, self.coins, self.mobs)
-        self.non_player_objects.add(self.coins, self.walls, self.mobs)
-        self.all_sprites.add(self.player, self.non_player_objects)
+        self.all_sprites.add(self.walls, self.interactive_objects)
+        self.create_buttons()
 
+        
+
+    def create_buttons(self):
         resume_btn  = Button((SCREEN_WIDTH / 2 - BTN_WIDTH / 2, SCREEN_HEIGHT / 4), "resume_btn.png", "resume")
         restart_btn = Button((SCREEN_WIDTH / 2 - BTN_WIDTH / 2, resume_btn.bottom + 3), "restart_btn.png", "restart")
         save_btn = Button((SCREEN_WIDTH / 2 - BTN_WIDTH / 2, restart_btn.bottom + 3), "save_btn.png", "save")
@@ -218,7 +250,7 @@ class Level:
                 elif button.name == "restart":
                     self.restart()
                 elif button.name == "save":
-                    save(self)
+                    save_game(self.get_state())
                 elif button.name == "quit":
                     quit()
 
@@ -226,7 +258,20 @@ class Level:
         self.__init__(self.level_map, self.surface)
 
 
-    
+    def get_state(self):
+        data = {
+            "player": self.player.get_state(),
+            "mobs": [mob.get_state() for mob in self.mobs],
+            "coins": [coin.get_state() for coin in self.coins],
+            "walls": [wall.get_state() for wall in self.walls],
+            "level_map": self.level_map,
+            "camera_direction": self.camera_direction,
+            "menu_showing": self.menu_showing,
+            "paused": self.paused
+
+        }
+        return data
+
 
     def get_player(self):
         return self.player
