@@ -49,11 +49,7 @@ class GameLoop:
                     self.level.pause_toggle()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    pos = event.pos
-                    ratio_x = self.screen.get_rect().width / self.fake_screen.get_rect().width
-                    ratio_y = self.screen.get_rect().height / self.fake_screen.get_rect().height
-                    scaled_pos = Vector2(pos[0] / ratio_x, pos[1] / ratio_y)
-                    self.level.button_clicked(scaled_pos)
+                    self.level.button_clicked(self.scale_mouse(event.pos))
             elif event.type == VIDEORESIZE:
                 self.screen = pygame.display.set_mode(event.size, HWSURFACE|DOUBLEBUF|RESIZABLE)
             elif event.type == pygame.QUIT:
@@ -65,3 +61,9 @@ class GameLoop:
         self.level.draw()
         self.screen.blit(pygame.transform.scale(self.fake_screen, self.screen.get_rect().size), (0, 0))
         pygame.display.update()
+
+    def scale_mouse(self, pos):
+        ratio_x = self.screen.get_rect().width / self.fake_screen.get_rect().width
+        ratio_y = self.screen.get_rect().height / self.fake_screen.get_rect().height
+        scaled_pos = Vector2(pos[0] / ratio_x, pos[1] / ratio_y)
+        return scaled_pos

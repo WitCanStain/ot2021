@@ -11,23 +11,39 @@ level_map = [
 '000000000000000   000000000000'
 ]
 
-level_map2 = [
-'1            ',
-'0            ',
-'0            ',
-'0            ',
-'0            ',
-'0       000  ',
-'0            ',
-'0            ',
-'0      0   3 ',
-'0000000000000'
+test_map = [
+'1             ',
+'0             ',
+'0             ',
+'0             ',
+'0             ',
+'0       000   ',
+'0             ',
+'0             ',
+'02     0   3 0',
+'00000000000000'
 ]
+
+test_map_coin = [
+'021 ',
+'0000'
+]
+
+test_map_mob = [
+'213',
+'000'
+]
+
+test_map_save = [
+'221 ',
+'0000'
+]
+
 
 TILE_SIZE = 16
 SCREEN_WIDTH = 320
 SCREEN_HEIGHT = 160
-BTN_WIDTH = 50
-BTN_HEIGHT = 12
+MENU_BTN_WIDTH = 50
+MENU_BTN_HEIGHT = 12
 GRAVITY = 0.5
 

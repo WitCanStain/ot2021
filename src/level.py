@@ -9,7 +9,7 @@ from sprites.mob import Mob
 from sprites.button import Button
 from game_save import save_game
 from sounds import collect_coin, player_death, game_win, game_over
-from settings import SCREEN_HEIGHT, SCREEN_WIDTH, BTN_WIDTH, BTN_HEIGHT, TILE_SIZE, GRAVITY
+from settings import SCREEN_HEIGHT, SCREEN_WIDTH, MENU_BTN_WIDTH, MENU_BTN_HEIGHT, TILE_SIZE, GRAVITY
 
 
 class Level:
@@ -69,7 +69,7 @@ class Level:
 
         if not self.paused:
             self.apply_gravity(self.interactive_objects)
-            self.collect_coins(self.player)
+            self.collect_coins()
             self.mob_move()
             self.mob_collide()
             self.all_sprites.update()
@@ -128,7 +128,7 @@ class Level:
     def apply_gravity(self, sprites):
         for sprite in sprites:
             sprite.update_velocity(Vector2(0, GRAVITY))
-            velocity = sprite.get_velocity()
+            velocity = sprite.velocity
             self.move_sprite(sprite, Vector2(velocity.x, velocity.y))
 
     def player_jump(self):
@@ -136,7 +136,7 @@ class Level:
             self.player.update_velocity(Vector2(0, -10))
 
     def move_sprite(self, sprite, direction):
-        velocity = sprite.get_velocity()
+        velocity = sprite.velocity
         direction = sprite.check_speed(direction)
         rectified_direction = Vector2(direction.x, direction.y)
         # setting sprite orientation
@@ -169,14 +169,14 @@ class Level:
                 elif direction.y < 0:
                     rectified_direction.y = coll_sprite.bottom - sprite.top
                     sprite.top = coll_sprite.bottom
-            
+
         else:
             sprite.bottom += direction.y
 
         return rectified_direction
 
-    def collect_coins(self, sprite, direction=Vector2()):
-        sprite_collisions = self.check_collision(sprite, self.coins, direction)
+    def collect_coins(self, direction=Vector2()):
+        sprite_collisions = self.check_collision(self.player, self.coins, direction)
         if sprite_collisions:
             for coin in sprite_collisions:
                 self.player.coins += 1
@@ -247,24 +247,22 @@ class Level:
         
 
     def create_buttons(self):
-        resume_btn  = Button((SCREEN_WIDTH / 2 - BTN_WIDTH / 2, SCREEN_HEIGHT / 4), "resume_btn.png", "resume")
-        self.restart_btn = Button((SCREEN_WIDTH / 2 - BTN_WIDTH / 2, resume_btn.bottom + 3), "restart_btn.png", "restart")
-        save_btn = Button((SCREEN_WIDTH / 2 - BTN_WIDTH / 2, self.restart_btn.bottom + 3), "save_btn.png", "save")
-        quit_btn = Button((SCREEN_WIDTH / 2 - BTN_WIDTH / 2, save_btn.bottom + 3), "quit_btn.png", "quit")
+        resume_btn  = Button((SCREEN_WIDTH / 2 - MENU_BTN_WIDTH / 2, SCREEN_HEIGHT / 4), "resume_btn.png", "resume")
+        self.restart_btn = Button((SCREEN_WIDTH / 2 - MENU_BTN_WIDTH / 2, resume_btn.bottom + 3), "restart_btn.png", "restart")
+        save_btn = Button((SCREEN_WIDTH / 2 - MENU_BTN_WIDTH / 2, self.restart_btn.bottom + 3), "save_btn.png", "save")
+        quit_btn = Button((SCREEN_WIDTH / 2 - MENU_BTN_WIDTH / 2, save_btn.bottom + 3), "quit_btn.png", "quit")
         self.pause_btn = Button((SCREEN_WIDTH - 64, 30), "pause_btn.png", "pause")
         self.game_win_btn = Button((SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 12), "game_win.png", "game_win")
         self.game_over_btn = Button((SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 12), "game_over.png", "game_over")
         self.menu_buttons.add(resume_btn, self.restart_btn, save_btn, quit_btn)
 
-    def move_player_left(self):
+    def move_player_left(self, direction=Vector2(-2, 0)):
         if not self.paused:
-            direction = Vector2(-2, 0)
             rectified_direction = self.move_sprite(self.player, direction)
             self.camera_direction = -rectified_direction
 
-    def move_player_right(self):
+    def move_player_right(self, direction=Vector2(2, 0)):
         if not self.paused:
-            direction = Vector2(2, 0)
             rectified_direction = self.move_sprite(self.player, direction)
             self.camera_direction = -rectified_direction
 
@@ -295,17 +293,11 @@ class Level:
             "camera_direction": self.camera_direction,
             "menu_showing": self.menu_showing,
             "paused": self.paused,
-            "game_win": self.game_win
+            "game_win_flag": self.game_win_flag,
+            "game_over_flag": self.game_over_flag
 
         }
         return data
-
-
-    def get_player(self):
-        return self.player
-
-    def get_all_sprites(self):
-        return self.all_sprites
 
     def sprite_collides(self, sprite):
         return sprite.collides

@@ -17,9 +17,6 @@ class ActorSprite(GameSprite):
 
         return direction
 
-    def get_velocity(self):
-        return self.velocity
-
     def update_velocity(self, velocity):
         self.velocity = self.check_speed(self.velocity + velocity)
 

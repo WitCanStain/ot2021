@@ -4,9 +4,14 @@ import pickle
 dirname = os.path.dirname(__file__)
 
 def save_game(game_state):
-    path = os.path.join(dirname, "saved_games", "savegame")
-    with open(path, "wb") as f:
-        pickle.dump(game_state, f)
+    try:
+        path = os.path.join(dirname, "saved_games", "savegame")
+        with open(path, "wb") as f:
+            pickle.dump(game_state, f)
+        return True
+    except Exception as e:
+        print(e)
+        return False
 
 def load_game(save_file):
 
