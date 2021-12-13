@@ -8,8 +8,8 @@ Ohjelman sovelluslogiikka on keskittynyt Level-luokkaan, joka hoitaa pelin tilan
 Ennen testejä luodaan uusi Level-olio joka alustetaan sopivalla testikäyttöön tarkoitetulla pelitasoa kuvaavalla kartalla joka on valmiiksi settings.py-moduulissa.
 Lisäksi on valmiiksi luotu testikäyttöön tarkoitettu tallennettu pelitila, jota käytetään TestSaveGame-luokassa.
 
-Ohjelman eri aspekteja testataan erillisillä testausluokilla. Physics-moduulia testataan yksikkö- ja integraatiotestein TestPhysics-luoka, a GameSprite-luokkaa TestGameSprite-luokalla, ja pelin tilan tallentamisen 
-ja lataamiseen liittyväät toiminnallisuutta TestSaveGame-luokalla. 
+Ohjelman eri aspekteja testataan erillisillä testausluokilla. Physics-moduulia testataan yksikkö- ja integraatiotestein TestPhysics-luoka, GameSprite-luokkaa TestGameSprite-luokalla, ja pelin tilan tallentamisen 
+ja lataamiseen liittyväät toiminnallisuutta TestSaveGame-luokalla. Pelisilmukan toiminnallisuutta testataan TestGameLoop-luokalla.
 
 ## Testikattavuus
 
@@ -17,9 +17,9 @@ Alla näkyy testikoodin kattavuusreportti.
 
 ![coverage](https://github.com/WitCanStain/ot2021/blob/master/documentation/coverage.png)
 
-Useimmat pelin toiminnoista on testattu joko yksikkö- tai integraatiotestein. Haarautumakattavuus on 91%.
+Useimmat pelin toiminnoista on testattu joko yksikkö- tai integraatiotestein. Haarautumakattavuus on 82%.
 
-## Järjestelmätestaus
+# Järjestelmätestaus
 
 Ohjelma on järjestelmätestattu manuaalisesti.
 
