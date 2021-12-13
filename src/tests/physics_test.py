@@ -10,8 +10,7 @@ class TestPhysics(unittest.TestCase):
         self.level = Level(test_map_walls, self.screen)
 
     
-    def test_collision_detection_works(self):
-        
+    def test_collision_detection_works(self):        
         self.assertTrue(check_collision(self.level.player, self.level.walls, pygame.Vector2(10, 0)))
 
     def test_sprite_touches_floor_works(self):

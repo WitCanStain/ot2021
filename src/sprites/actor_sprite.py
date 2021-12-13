@@ -15,7 +15,8 @@ class ActorSprite(GameSprite):
 
 
     def check_speed(self, direction=Vector2()):
-        """Checks whether the given vector exceed the allowed speeds for the sprite and corrects if necessary.
+        """Checks whether the given vector exceed the allowed speeds for the
+        sprite and corrects if necessary.
 
         Args:
             direction: The direction vector that is being checked. Defaults to Vector2().
@@ -39,20 +40,6 @@ class ActorSprite(GameSprite):
         self.active = False
         self.collides = False
         self.update_velocity(Vector2(0, -7))
-
-    # def touches_floor(self, tiles):
-    #     """Checks whether the given sprite is currently touching the floor.
-
-    #     Args:
-    #         tiles: the tiles that are considered floor
-
-    #     Returns:
-    #         bool: boolean value indicating whether the sprite touches the floor.
-    #     """
-        
-    #     if self.check_collision(sprite, self.walls, Vector2(0, 1)):
-    #         return True
-    #     return False
 
     def get_state(self):
         """Returns the instance variables alongside the parent class' variables.

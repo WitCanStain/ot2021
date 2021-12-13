@@ -1,5 +1,4 @@
 import pygame
-from pygame import Vector2
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT
 
 class GameSprite(pygame.sprite.Sprite):
@@ -12,14 +11,17 @@ class GameSprite(pygame.sprite.Sprite):
         Args:
             pos (Vector2): initial position of the sprite
             path (path): path to the sprite image
-            collides (bool, optional): Value indicating whether the sprite collides with other sprites. Defaults to True.
+            collides (bool, optional): Value indicating whether the sprite
+                collides with other sprites. Defaults to True.
 
         Attributes:
             self.image: the image representing the sprite.
             self.img_left: the sprite facing left.
             self.img_right: the sprite facing right.
-            self.rect: the rect object of the sprite, containing the coordinates of the sprite.
-            self.collides: boolean value indicating whether the sprite detects collisions with other sprites
+            self.rect: the rect object of the sprite, containing the
+                coordinates of the sprite.
+            self.collides: boolean value indicating whether the sprite detects collisions with
+                other sprites
             self.active: boolean value indicating whether the sprite is still in the game
         """
         super().__init__()
@@ -38,13 +40,14 @@ class GameSprite(pygame.sprite.Sprite):
     def update_pos(self, direction=pygame.Vector2()):
         self.rect.x += round(direction.x)
         self.rect.y += round(direction.y)
-        
-    def update(self, direction=Vector2()):
+
+    def update(self):
         self.rect.x = round(self._left)
         self.rect.y = round(self._top)
-        
+
     def off_screen(self):
-        """Returns a boolean value indicating whether the sprite is currently within screen bounds.
+        """Returns a boolean value indicating whether the sprite is currently
+        within screen bounds.
 
         Returns:
             Bool: value indicating whether sprite is within screen.

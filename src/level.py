@@ -1,4 +1,4 @@
-import os
+import sys
 import pygame
 from pygame import Vector2
 from numpy import sign
@@ -9,12 +9,13 @@ from sprites.mob import Mob
 from sprites.button import Button
 from game_save import save_game
 from physics import check_collision, move_sprite, apply_gravity, sprite_touches_floor
-from sounds import collect_coin, player_death, game_win, game_over
-from settings import SCREEN_HEIGHT, SCREEN_WIDTH, MENU_BTN_WIDTH, MENU_BTN_HEIGHT, TILE_SIZE
+from sounds import collect_coin, game_win, game_over
+from settings import SCREEN_HEIGHT, SCREEN_WIDTH, MENU_BTN_WIDTH, TILE_SIZE
 
 
 class Level:
-    """This class contains most of the important functionality for running the game, such as lists of sprites in the world and methods for changing the game state.
+    """This class contains most of the important functionality for running the game,
+    such as lists of sprites in the world and methods for changing the game state.
     """
     def __init__(self, level_map, surface, game_state=None):
         """Initialise the instance.
@@ -22,17 +23,20 @@ class Level:
         Args:
             level_map: the level map used to generate the game world.
             surface: the screen that all sprites will be drawn on.
-            game_state: object containing game state information. If present, load information into instance. Defaults to None.
+            game_state: object containing game state information. If present, load
+                information into instance. Defaults to None.
 
         Attributes:
             self.player: the player sprite.
             self.coins: pygame Group containing the coins in the game.
             self.mobs: pygame Group containing the mobs in the game
-            self.interactive_objects: pygame Group containing all the sprites that can be interacted with during gameplay.
+            self.interactive_objects: pygame Group containing all the sprites that can be
+                interacted with during gameplay.
             self.all_sprites: pygame Group containing all non-button sprites.
             self.walls: pygame Group containing the wall tiles.
             self.menu_buttons: pygame Group containing the menu buttons.
-            self.camera_direction: a vector indicating how all sprites should move in order to simulate the effect of the player moving.
+            self.camera_direction: a vector indicating how all sprites should move in order
+                to simulate the effect of the player moving.
             self.pause_btn: button that shows when game is paused.
             self.restart_btn: a menu button that shows when menu is on and when the game is over.
             self.game_win_btn: a Button object that shows on screen when the player wins.
@@ -43,7 +47,7 @@ class Level:
             self.game_over_flag: a boolean value indicating whether the game has been lost.
             self.coin_count: a number indicating the amount of coins in the level.
         """
-        
+
         self.surface = surface
         self.level_map = level_map
         self.player = None
@@ -69,7 +73,8 @@ class Level:
         self.coin_count = len(self.coins)
 
     def draw(self):
-        """This method forms the core of the game loop. It performs various movements and collision checks, and draws sprites on screen. 
+        """This method forms the core of the game loop. It performs various
+        movements and collision checks, and draws sprites on screen.
         """
 
         if not self.paused:
@@ -101,9 +106,9 @@ class Level:
             self.game_win()
         elif self.game_over_flag:
             self.game_over()
-            
 
-        
+
+
     def game_over(self):
         self.surface.fill("black")
         self.surface.blit(self.game_over_btn.image, self.game_over_btn.rect)
@@ -142,7 +147,7 @@ class Level:
         if not self.paused:
             rectified_direction = move_sprite(self.player, self.walls, direction)
             self.camera_direction = -rectified_direction
-    
+
     def mob_move(self):
         for mob in self.mobs:
             rectified_direction = move_sprite(mob, self.walls, mob.direction)
@@ -164,9 +169,8 @@ class Level:
     def mob_collide(self, direction=Vector2()):
         sprite_collisions = check_collision(self.player, self.mobs, direction)
         if sprite_collisions:
-            for mob in sprite_collisions:
-                pygame.mixer.Sound.play(game_over)
-                self.player.deactivate()
+            pygame.mixer.Sound.play(game_over)
+            self.player.deactivate()
 
     def create(self, level_map):
         """This method sets up the level from the map data.
@@ -195,15 +199,16 @@ class Level:
 
         self.interactive_objects.add(self.player, self.coins, self.mobs)
         self.all_sprites.add(self.walls, self.interactive_objects)
-        self.create_buttons()        
+        self.create_buttons()
 
     def create_buttons(self):
         """Creates the Button sprites that can be shown to the player
         """
-        resume_btn  = Button((SCREEN_WIDTH / 2 - MENU_BTN_WIDTH / 2, SCREEN_HEIGHT / 4), "resume_btn.png", "resume")
-        self.restart_btn = Button((SCREEN_WIDTH / 2 - MENU_BTN_WIDTH / 2, resume_btn.bottom + 3), "restart_btn.png", "restart")
-        save_btn = Button((SCREEN_WIDTH / 2 - MENU_BTN_WIDTH / 2, self.restart_btn.bottom + 3), "save_btn.png", "save")
-        quit_btn = Button((SCREEN_WIDTH / 2 - MENU_BTN_WIDTH / 2, save_btn.bottom + 3), "quit_btn.png", "quit")
+        menu_button_x_pos = SCREEN_WIDTH / 2 - MENU_BTN_WIDTH / 2
+        resume_btn = Button((menu_button_x_pos, SCREEN_HEIGHT / 4), "resume_btn.png", "resume")
+        self.restart_btn = Button((menu_button_x_pos, resume_btn.bottom + 3), "restart_btn.png", "restart")
+        save_btn = Button((menu_button_x_pos, self.restart_btn.bottom + 3), "save_btn.png", "save")
+        quit_btn = Button((menu_button_x_pos, save_btn.bottom + 3), "quit_btn.png", "quit")
         self.pause_btn = Button((SCREEN_WIDTH - 64, 30), "pause_btn.png", "pause")
         self.game_win_btn = Button((SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 12), "game_win.png", "game_win")
         self.game_over_btn = Button((SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 12), "game_over.png", "game_over")
@@ -225,7 +230,7 @@ class Level:
                     elif button.name == "save":
                         save_game(self.get_state())
                     elif button.name == "quit":
-                        quit()
+                        sys.exit()
 
     def set_state(self, game_state):
         """This method reloads information from a game_state object to enable loading games from memory.
@@ -238,14 +243,14 @@ class Level:
         for attribute in game_state["player"]:
             if attribute != "pos":
                 vars(self.player)[attribute] = game_state["player"][attribute]
-        
+
         self.mobs.add(self.create_sprites_from_game_state(game_state["mobs"], Mob))
         self.walls.add(self.create_sprites_from_game_state(game_state["walls"], Wall))
         self.coins.add(self.create_sprites_from_game_state(game_state["coins"], Coin))
 
         self.interactive_objects.add(self.player, self.coins, self.mobs)
         self.all_sprites.add(self.walls, self.interactive_objects)
-        self.create_buttons()  
+        self.create_buttons()
 
     def create_sprites_from_game_state(self, sprite_state_list, Tile):
         tiles = []
@@ -255,7 +260,7 @@ class Level:
                 if attribute != "pos":
                     vars(tile)[attribute] = saved_tile[attribute]
             tiles.append(tile)
-        return tiles 
+        return tiles
 
     def get_state(self):
         data = {

@@ -14,11 +14,11 @@ def save_game(game_state):
     """
     try:
         path = os.path.join(dirname, "saved_games", "savegame")
-        with open(path, "wb") as f:
-            pickle.dump(game_state, f)
+        with open(path, "wb") as file:
+            pickle.dump(game_state, file)
         return True
-    except Exception as e:
-        print(e)
+    except Exception as error:
+        print(error)
         return False
 
 def load_game(save_file):
@@ -32,6 +32,6 @@ def load_game(save_file):
     """
 
     game_state = None
-    with open(save_file, "rb") as f:
-        game_state = pickle.load(f)
+    with open(save_file, "rb") as file:
+        game_state = pickle.load(file)
     return game_state

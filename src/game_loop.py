@@ -1,6 +1,6 @@
 import os
 import pygame
-from pygame.locals import HWSURFACE, DOUBLEBUF, RESIZABLE, VIDEORESIZE, K_LEFT, K_RIGHT, K_DOWN
+from pygame.locals import HWSURFACE, DOUBLEBUF, RESIZABLE, VIDEORESIZE, K_LEFT, K_RIGHT
 from pygame import Vector2
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT, level_map
 from level import Level
@@ -68,7 +68,8 @@ class GameLoop:
         pygame.display.update()
 
     def scale_mouse(self, pos):
-        """Scales mouse coordinates so that the correct coordinates are produced even if player resizes window.
+        """Scales mouse coordinates so that the correct coordinates are produced even if
+        player resizes window.
 
         Args:
             pos: position of the mouse cursor.
