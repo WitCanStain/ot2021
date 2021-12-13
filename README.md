@@ -4,6 +4,7 @@ Ohjelma on peli, jossa napataan kolikoita ja vältellään vihollisia. Pelihahmo
 
 ## Dokumentaatio
 
+[Käyttöohje](https://github.com/WitCanStain/ot2021/blob/master/documentation/kayttoohje.md)
 
 [Kirjanpito](https://github.com/WitCanStain/ot2021/blob/master/documentation/kirjanpito.md)
 
