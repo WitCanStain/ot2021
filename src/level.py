@@ -8,7 +8,7 @@ from sprites.coin import Coin
 from sprites.mob import Mob
 from sprites.button import Button
 from game_save import save_game
-from sounds import collect_coin, player_death, mob_death
+from sounds import collect_coin, player_death, game_win, game_over
 from settings import SCREEN_HEIGHT, SCREEN_WIDTH, BTN_WIDTH, BTN_HEIGHT, TILE_SIZE, GRAVITY
 
 
@@ -26,12 +26,18 @@ class Level:
         self.menu_buttons = pygame.sprite.Group()
         self.camera_direction = Vector2()
         self.pause_btn = None
+        self.restart_btn = None
+        self.game_win_btn = None
+        self.game_over_btn = None
         self.menu_showing = False
         self.paused = False
+        self.game_win_flag = False
+        self.game_over_flag = False
         if game_state:
             self.set_state(game_state)
         else:
             self.create(self.level_map)
+        self.coin_count = len(self.coins)
 
     def set_state(self, game_state):
 
@@ -51,7 +57,6 @@ class Level:
     def create_sprites_from_game_state(self, sprite_state_list, Tile):
         tiles = []
         for saved_tile in sprite_state_list:
-            print(saved_tile)
             tile = Tile(saved_tile["pos"])
             for attribute in saved_tile:
                 if attribute != "pos":
@@ -61,7 +66,7 @@ class Level:
 
 
     def draw(self):
-        # self.walls.update()
+
         if not self.paused:
             self.apply_gravity(self.interactive_objects)
             self.collect_coins(self.player)
@@ -83,10 +88,27 @@ class Level:
         for sprite in self.interactive_objects:
             if sprite.off_screen() and not sprite.active:
                 sprite.kill()
+                if sprite == self.player:
+                    self.game_over_flag = True
+
+
+        if self.game_win_flag:
+            self.game_win()
+        elif self.game_over_flag:
+            self.game_over()
+            
 
         
-        
+    def game_over(self):
+        self.surface.fill("black")
+        self.surface.blit(self.game_over_btn.image, self.game_over_btn.rect)
+        self.surface.blit(self.restart_btn.image, self.restart_btn.rect)
 
+
+    def game_win(self):
+        self.paused = True
+        self.surface.fill("black")
+        self.surface.blit(self.game_win_btn.image, self.game_win_btn.rect)
 
     def menu_toggle(self):
         if self.menu_showing:
@@ -160,6 +182,9 @@ class Level:
                 self.player.coins += 1
                 pygame.mixer.Sound.play(collect_coin)
                 self.deactivate_sprite(coin)
+        if self.player.coins == self.coin_count:
+            pygame.mixer.Sound.play(game_win)
+            self.game_win_flag = True
 
     def mob_move(self):
         for mob in self.mobs:
@@ -172,9 +197,9 @@ class Level:
         sprite_collisions = self.check_collision(self.player, self.mobs, direction)
         if sprite_collisions:
             for mob in sprite_collisions:
-                pygame.mixer.Sound.play(player_death)
+                pygame.mixer.Sound.play(game_over)
                 self.deactivate_sprite(self.player)
-                self.menu_toggle()
+                # self.menu_toggle()
 
     def deactivate_sprite(self, sprite):
         sprite.active = False
@@ -223,12 +248,13 @@ class Level:
 
     def create_buttons(self):
         resume_btn  = Button((SCREEN_WIDTH / 2 - BTN_WIDTH / 2, SCREEN_HEIGHT / 4), "resume_btn.png", "resume")
-        restart_btn = Button((SCREEN_WIDTH / 2 - BTN_WIDTH / 2, resume_btn.bottom + 3), "restart_btn.png", "restart")
-        save_btn = Button((SCREEN_WIDTH / 2 - BTN_WIDTH / 2, restart_btn.bottom + 3), "save_btn.png", "save")
+        self.restart_btn = Button((SCREEN_WIDTH / 2 - BTN_WIDTH / 2, resume_btn.bottom + 3), "restart_btn.png", "restart")
+        save_btn = Button((SCREEN_WIDTH / 2 - BTN_WIDTH / 2, self.restart_btn.bottom + 3), "save_btn.png", "save")
         quit_btn = Button((SCREEN_WIDTH / 2 - BTN_WIDTH / 2, save_btn.bottom + 3), "quit_btn.png", "quit")
         self.pause_btn = Button((SCREEN_WIDTH - 64, 30), "pause_btn.png", "pause")
-
-        self.menu_buttons.add(resume_btn, restart_btn, save_btn, quit_btn)
+        self.game_win_btn = Button((SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 12), "game_win.png", "game_win")
+        self.game_over_btn = Button((SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 12), "game_over.png", "game_over")
+        self.menu_buttons.add(resume_btn, self.restart_btn, save_btn, quit_btn)
 
     def move_player_left(self):
         if not self.paused:
@@ -243,16 +269,17 @@ class Level:
             self.camera_direction = -rectified_direction
 
     def button_clicked(self, pos):
-        for button in self.menu_buttons:
-            if button.rect.collidepoint(pos):
-                if button.name == "resume":
-                    self.menu_toggle()
-                elif button.name == "restart":
-                    self.restart()
-                elif button.name == "save":
-                    save_game(self.get_state())
-                elif button.name == "quit":
-                    quit()
+        if self.menu_showing or self.game_over_flag:
+            for button in self.menu_buttons:
+                if button.rect.collidepoint(pos):
+                    if button.name == "resume":
+                        self.menu_toggle()
+                    elif button.name == "restart":
+                        self.restart()
+                    elif button.name == "save":
+                        save_game(self.get_state())
+                    elif button.name == "quit":
+                        quit()
 
     def restart(self):
         self.__init__(self.level_map, self.surface)
@@ -267,7 +294,8 @@ class Level:
             "level_map": self.level_map,
             "camera_direction": self.camera_direction,
             "menu_showing": self.menu_showing,
-            "paused": self.paused
+            "paused": self.paused,
+            "game_win": self.game_win
 
         }
         return data

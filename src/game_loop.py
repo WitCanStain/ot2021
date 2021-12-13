@@ -47,7 +47,7 @@ class GameLoop:
                     self.level.menu_toggle()
                 elif event.key == pygame.K_p:
                     self.level.pause_toggle()
-            elif event.type == pygame.MOUSEBUTTONDOWN and self.level.menu_showing:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     pos = event.pos
                     ratio_x = self.screen.get_rect().width / self.fake_screen.get_rect().width
