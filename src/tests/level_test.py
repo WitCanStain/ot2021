@@ -53,10 +53,7 @@ class TestLevel(unittest.TestCase):
         level.restart()
         self.assertEqual(level.player.coins, 0)
 
-    def test_collision_detection_works(self):
-        level = Level(test_map_walls, self.screen)
-        self.assertTrue(level.check_collision(level.player, level.walls, pygame.Vector2(10, 0)))
-
+    
     def test_player_can_jump(self):
         level = Level(test_map_coin, self.screen)
         y_coord = level.player.rect.top
