@@ -3,7 +3,7 @@
 
 ## Sovelluksen tarkoitus
 
-Sovellus on pygame-kirjastolla tuotettu 2d-tasohyppelypeli. Pelin tarkoituksena on tuhota tietokoneen hallitsemia vihollisia ja kerätä aarteita tasoilta.
+Sovellus on pygame-kirjastolla tuotettu 2d-tasohyppelypeli. Pelin tarkoituksena on väistellä tietokoneen hallitsemia vihollisia ja kerätä aarteita tasoilta. 
 Sovelluksessa on vain yksi käyttäjätyyppi, eli pelaaja.
 
 
@@ -14,22 +14,25 @@ Sovelluksessa on vain yksi käyttäjätyyppi, eli pelaaja.
 
 * Pelaaja voi liikkua tasolla vasemmalle ja oikealle, sekä hypätä ilmaan
 
-* Pelajaa voi miekkaa heilauttamalla tuhota vihollisen
-
 * Pelaaja voi napata aarteen kulkemalla sen päältä.
 
 * Pelaaja voi siirtyä toiselle tasannolle hyppäämällä tai pudottautumalla.
 
-* Pelaaja voi siirtyä toiselle tasolle napattuaan kaikki tason aarteet.
+* pelaaja voi tallentaa pelin valikon kautta ja ladata pelin antamalla tallennustiedoston nimen käynnistyksen yhteydessä.
 
+* pelaaja voi uudelleenkäynnistää tason.
+
+* pelaaja voi poistua pelistä valikon kautta.
+
+* pelaaja voi paussata pelin joko P-näppäimellä tai tuomalla valikon esiin ESC-näppäimellä.
+
+* Pelaaja voi hävitä pelin osumalla viholliseen ja voittaa pelin keräämällä kaikki tason kolikot.
 
 # Jatkokehitysideoita:
 
 * Useantyyppisiä vihollisia
 
-* Useantyyppisiä aseita pelaajalle
-
-* Pelaaja voi tallentaa pelinsä tilan ja jatkaa aiempaa peliä.
+* aseita pelaajalle
 
 * Pelaaja voi hypätä uudestaan ilmassa ja takertua seinään kiinni.
 
