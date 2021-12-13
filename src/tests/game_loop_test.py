@@ -3,7 +3,7 @@ import unittest
 import pygame
 from game_loop import GameLoop
 from level import Level
-from settings import *
+from game_utils.settings import *
 
 
 class TestGameLoop(unittest.TestCase):

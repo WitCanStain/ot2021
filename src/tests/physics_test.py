@@ -1,7 +1,7 @@
 import unittest
 import pygame
 from physics import check_collision, sprite_touches_floor
-from settings import *
+from game_utils.settings import *
 from level import Level
 class TestPhysics(unittest.TestCase):
     def setUp(self):

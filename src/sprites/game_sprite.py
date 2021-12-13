@@ -1,5 +1,5 @@
 import pygame
-from settings import SCREEN_WIDTH, SCREEN_HEIGHT
+from game_utils.settings import SCREEN_WIDTH, SCREEN_HEIGHT
 
 class GameSprite(pygame.sprite.Sprite):
     """The parent class for all game sprites, containing functionality common to all sprites.

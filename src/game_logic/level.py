@@ -7,10 +7,10 @@ from sprites.player import Player
 from sprites.coin import Coin
 from sprites.mob import Mob
 from sprites.button import Button
-from game_save import save_game
-from physics import check_collision, move_sprite, apply_gravity, sprite_touches_floor
-from sounds import collect_coin, game_win, game_over
-from settings import SCREEN_HEIGHT, SCREEN_WIDTH, MENU_BTN_WIDTH, TILE_SIZE
+from game_utils.game_save import save_game
+from game_logic.physics import check_collision, move_sprite, apply_gravity, sprite_touches_floor
+from game_utils.sounds import collect_coin, game_win, game_over
+from game_utils.settings import SCREEN_HEIGHT, SCREEN_WIDTH, MENU_BTN_WIDTH, TILE_SIZE
 
 
 class Level:

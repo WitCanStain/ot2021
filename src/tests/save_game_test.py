@@ -2,8 +2,8 @@ import os
 import unittest
 import pygame
 from level import Level
-from game_save import save_game, load_game
-from settings import *
+from game_utils.game_save import save_game, load_game
+from game_utils.settings import *
 
 
 class TestSaveGame(unittest.TestCase):

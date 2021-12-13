@@ -13,7 +13,7 @@ def save_game(game_state):
         bool: A boolean value indicating success or failure.
     """
     try:
-        path = os.path.join(dirname, "saved_games", "savegame")
+        path = os.path.join(dirname, "..", "saved_games", "savegame")
         with open(path, "wb") as file:
             pickle.dump(game_state, file)
         return True

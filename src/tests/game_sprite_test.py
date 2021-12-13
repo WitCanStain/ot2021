@@ -4,7 +4,7 @@ import pygame
 from pygame import Vector2
 
 from sprites.game_sprite import GameSprite
-from settings import *
+from game_utils.settings import *
 
 dirname = os.path.dirname(__file__)
 

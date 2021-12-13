@@ -2,9 +2,9 @@ import os
 import pygame
 from pygame.locals import HWSURFACE, DOUBLEBUF, RESIZABLE, VIDEORESIZE, K_LEFT, K_RIGHT
 from pygame import Vector2
-from settings import SCREEN_WIDTH, SCREEN_HEIGHT, level_map
-from level import Level
-from game_save import load_game
+from game_utils.settings import SCREEN_WIDTH, SCREEN_HEIGHT, level_map
+from game_logic.level import Level
+from game_utils.game_save import load_game
 
 
 class GameLoop:
@@ -16,7 +16,7 @@ class GameLoop:
         self.clock = pygame.time.Clock()
         if save_file:
             dirname = os.path.dirname(__file__)
-            path = os.path.join(dirname, "saved_games", save_file)
+            path = os.path.join(dirname, "..", "saved_games", save_file)
             game_state = load_game(path)
             saved_level_map = game_state["level_map"]
             self.level = Level(saved_level_map, self.fake_screen, game_state)
