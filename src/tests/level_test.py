@@ -3,7 +3,6 @@ import unittest
 import pygame
 
 from level import Level
-from game_save import save_game, load_game
 from settings import *
 class TestLevel(unittest.TestCase):
     def setUp(self):
@@ -29,21 +28,6 @@ class TestLevel(unittest.TestCase):
 
         self.assertTrue(level.game_over_flag)
 
-    def test_can_save_game(self):
-        level = Level(test_map_two_coins, self.screen)
-        level.draw()
-        level.move_player_left()
-        level.draw()
-        level.draw()
-        self.assertTrue(save_game(level.get_state()))
-
-    def test_can_load_game(self):
-        dirname = os.path.dirname(__file__)
-        path = os.path.join(dirname, "..", "saved_games", "testsave")
-        game_state = load_game(path)
-        level = Level(level_map, self.screen, game_state)
-        self.assertEqual(len(level.coins), 3)
-
     def test_restarting_resets_player_coins(self):
         level = Level(test_map_two_coins, self.screen)
         for i in range(100):
@@ -52,7 +36,6 @@ class TestLevel(unittest.TestCase):
         self.assertEqual(level.player.coins, 1)
         level.restart()
         self.assertEqual(level.player.coins, 0)
-
     
     def test_player_can_jump(self):
         level = Level(test_map_coin, self.screen)
@@ -60,3 +43,24 @@ class TestLevel(unittest.TestCase):
         level.player_jump()
         level.draw()
         self.assertTrue(level.player.rect.top > y_coord)
+
+    def test_menu_toggle_toggles_menu(self):
+
+        level = Level(test_map_coin, self.screen)
+
+        level.menu_toggle()
+        self.assertTrue(level.menu_showing)
+
+        level.menu_toggle()
+        self.assertFalse(level.menu_showing)
+
+    def test_pause_toggle_toggles_pause(self):
+
+        level = Level(test_map_coin, self.screen)
+
+        level.pause_toggle()
+        self.assertTrue(level.paused)
+
+        level.pause_toggle()
+        self.assertFalse(level.paused)
+
