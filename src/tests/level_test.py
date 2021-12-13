@@ -14,10 +14,10 @@ class TestLevel(unittest.TestCase):
 
     def test_player_wins_when_all_coins_are_collected(self):
         level = Level(test_map_coin, self.screen)
-        level.draw()
-        level.move_player_left()
-        level.draw()
-        level.draw()
+        for i in range(100):
+            if not level.game_win_flag:
+                level.draw()
+                level.move_player_left()
         self.assertTrue(level.game_win_flag)
 
     def test_player_loses_when_collide_with_mob(self):
@@ -44,12 +44,22 @@ class TestLevel(unittest.TestCase):
         level = Level(level_map, self.screen, game_state)
         self.assertEqual(len(level.coins), 3)
 
-    def test_restarting_recreates_coins(self):
+    def test_restarting_resets_player_coins(self):
         level = Level(test_map_two_coins, self.screen)
-        level.draw()
-        level.move_player_left()
-        level.draw()
-        level.draw()
+        for i in range(100):
+                level.draw()
+                level.move_player_left()
+        self.assertEqual(level.player.coins, 1)
         level.restart()
-        self.assertEqual(len(level.coins), 2)
-    
+        self.assertEqual(level.player.coins, 0)
+
+    def test_collision_detection_works(self):
+        level = Level(test_map_walls, self.screen)
+        self.assertTrue(level.check_collision(level.player, level.walls, pygame.Vector2(10, 0)))
+
+    def test_player_can_jump(self):
+        level = Level(test_map_coin, self.screen)
+        y_coord = level.player.rect.top
+        level.player_jump()
+        level.draw()
+        self.assertTrue(level.player.rect.top > y_coord)

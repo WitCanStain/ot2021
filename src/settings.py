@@ -35,8 +35,13 @@ test_map_mob = [
 ]
 
 test_map_two_coins = [
-'221 ',
+'0212',
 '0000'
+]
+
+test_map_walls = [
+'010',
+'000'
 ]
 
 
