@@ -32,3 +32,6 @@ Käyttöohjeen mukaiset toimenpiteet on käyty läpi ja testattu, että niillä 
 
 Kaikki vaatimusmäärittelyssä listatus toteutetut ominaisuudet on käyty läpi ja testattu.
 
+## Laatuongelmat
+
+Sovellus ei tällä hetkellä tunnista, onko pelaaja tippunut tason alle. Ainoa keino aloittaa peli uudestaan tällaisessa tilanteessa on käynnistää se uudelleen tai painaa valikosta restart-nappia. Lisäksi pelin viholliset tarvitsevat seinä-blokin tiellensä tai ne jatkavat kulkemista yhteen suuntaan kunnes tippuvat tasolta.
