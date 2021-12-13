@@ -15,7 +15,7 @@ ja lataamiseen liittyväät toiminnallisuutta TestSaveGame-luokalla. Pelisilmuka
 
 Alla näkyy testikoodin kattavuusreportti.
 
-![coverage](https://github.com/WitCanStain/ot2021/blob/master/documentation/coverage.png)
+![coverage](https://github.com/WitCanStain/ot2021/blob/master/documentation/kuvat/coverage.png)
 
 Useimmat pelin toiminnoista on testattu joko yksikkö- tai integraatiotestein. Haarautumakattavuus on 82%.
 
