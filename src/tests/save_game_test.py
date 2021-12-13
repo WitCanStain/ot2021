@@ -2,7 +2,7 @@ import os
 import unittest
 import pygame
 from level import Level
-from game_utils.game_save import save_game, load_game
+from game_utils.game_save import GameSave
 from game_utils.settings import *
 
 
@@ -18,7 +18,7 @@ class TestSaveGame(unittest.TestCase):
         level.move_player_left()
         level.draw()
         level.draw()
-        self.assertTrue(save_game(level.get_state()))
+        self.assertTrue(GameSave.save_game(level.get_state()))
 
     def test_can_load_game(self):
         dirname = os.path.dirname(__file__)

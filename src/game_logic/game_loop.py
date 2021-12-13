@@ -4,7 +4,7 @@ from pygame.locals import HWSURFACE, DOUBLEBUF, RESIZABLE, VIDEORESIZE, K_LEFT, 
 from pygame import Vector2
 from game_utils.settings import SCREEN_WIDTH, SCREEN_HEIGHT, level_map
 from game_logic.level import Level
-from game_utils.game_save import load_game
+from game_utils.game_save import GameSave
 
 
 class GameLoop:
@@ -17,7 +17,7 @@ class GameLoop:
         if save_file:
             dirname = os.path.dirname(__file__)
             path = os.path.join(dirname, "..", "saved_games", save_file)
-            game_state = load_game(path)
+            game_state = GameSave.load_game(path)
             saved_level_map = game_state["level_map"]
             self.level = Level(saved_level_map, self.fake_screen, game_state)
         else:

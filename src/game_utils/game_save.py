@@ -3,35 +3,37 @@ import pickle
 
 dirname = os.path.dirname(__file__)
 
-def save_game(game_state):
-    """Serialises the game_state into an output file.
+class GameSave():
 
-    Args:
-        game_state: game state data.
+    def save_game(game_state):
+        """Serialises the game_state into an output file.
 
-    Returns:
-        bool: A boolean value indicating success or failure.
-    """
-    try:
-        path = os.path.join(dirname, "..", "saved_games", "savegame")
-        with open(path, "wb") as file:
-            pickle.dump(game_state, file)
-        return True
-    except Exception as error:
-        print(error)
-        return False
+        Args:
+            game_state: game state data.
 
-def load_game(save_file):
-    """Loads game state data from the given save_file.
+        Returns:
+            bool: A boolean value indicating success or failure.
+        """
+        try:
+            path = os.path.join(dirname, "..", "saved_games", "savegame")
+            with open(path, "wb") as file:
+                pickle.dump(game_state, file)
+            return True
+        except Exception as error:
+            print(error)
+            return False
 
-    Args:
-        save_file: the save file from which data is being read.
+    def load_game(save_file):
+        """Loads game state data from the given save_file.
 
-    Returns:
-        game_state: deserialised game state data.
-    """
+        Args:
+            save_file: the save file from which data is being read.
 
-    game_state = None
-    with open(save_file, "rb") as file:
-        game_state = pickle.load(file)
-    return game_state
+        Returns:
+            game_state: deserialised game state data.
+        """
+
+        game_state = None
+        with open(save_file, "rb") as file:
+            game_state = pickle.load(file)
+        return game_state
