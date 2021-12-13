@@ -19,7 +19,7 @@ Alla näkyy testikoodin kattavuusreportti.
 
 Useimmat pelin toiminnoista on testattu joko yksikkö- tai integraatiotestein. Haarautumakattavuus on 82%.
 
-## Järjestelmätestaus
+# Järjestelmätestaus
 
 Ohjelma on järjestelmätestattu manuaalisesti.
 
