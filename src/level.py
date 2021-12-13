@@ -8,8 +8,9 @@ from sprites.coin import Coin
 from sprites.mob import Mob
 from sprites.button import Button
 from game_save import save_game
+from physics import check_collision, move_sprite, apply_gravity, sprite_touches_floor
 from sounds import collect_coin, player_death, game_win, game_over
-from settings import SCREEN_HEIGHT, SCREEN_WIDTH, MENU_BTN_WIDTH, MENU_BTN_HEIGHT, TILE_SIZE, GRAVITY
+from settings import SCREEN_HEIGHT, SCREEN_WIDTH, MENU_BTN_WIDTH, MENU_BTN_HEIGHT, TILE_SIZE
 
 
 class Level:
@@ -67,43 +68,12 @@ class Level:
             self.create(self.level_map)
         self.coin_count = len(self.coins)
 
-    def set_state(self, game_state):
-        """This method reloads information from a game_state object to enable loading games from memory.
-
-        Args:
-            game_state: a game_state object.
-        """
-
-        self.player = Player(game_state["player"]["pos"])
-        for attribute in game_state["player"]:
-            if attribute != "pos":
-                vars(self.player)[attribute] = game_state["player"][attribute]
-        
-        self.mobs.add(self.create_sprites_from_game_state(game_state["mobs"], Mob))
-        self.walls.add(self.create_sprites_from_game_state(game_state["walls"], Wall))
-        self.coins.add(self.create_sprites_from_game_state(game_state["coins"], Coin))
-
-        self.interactive_objects.add(self.player, self.coins, self.mobs)
-        self.all_sprites.add(self.walls, self.interactive_objects)
-        self.create_buttons()   
-
-    def create_sprites_from_game_state(self, sprite_state_list, Tile):
-        tiles = []
-        for saved_tile in sprite_state_list:
-            tile = Tile(saved_tile["pos"])
-            for attribute in saved_tile:
-                if attribute != "pos":
-                    vars(tile)[attribute] = saved_tile[attribute]
-            tiles.append(tile)
-        return tiles
-
-
     def draw(self):
         """This method forms the core of the game loop. It performs various movements and collision checks, and draws sprites on screen. 
         """
 
         if not self.paused:
-            self.apply_gravity(self.interactive_objects)
+            apply_gravity(self.interactive_objects, self.walls)
             self.collect_coins()
             self.mob_move()
             self.mob_collide()
@@ -159,140 +129,44 @@ class Level:
         else:
             self.paused = True
 
-
-    def apply_gravity(self, sprites):
-        """Applies gravity to all given sprites.
-
-        Args:
-            sprites: a group or list of sprites to which gravity is being applied.
-        """
-        for sprite in sprites:
-            sprite.update_velocity(Vector2(0, GRAVITY))
-            velocity = sprite.velocity
-            self.move_sprite(sprite, Vector2(velocity.x, velocity.y))
-
     def player_jump(self):
-        if self.sprite_touches_floor(self.player):
+        if sprite_touches_floor(self.player, self.walls):
             self.player.update_velocity(Vector2(0, -10))
 
-    def move_sprite(self, sprite, direction):
-        """This method moves the given sprite in the given direction unless there is something blocking the way,
-        in which case it moves the sprite as much as possible in the same direction.
+    def move_player_left(self, direction=Vector2(-2, 0)):
+        if not self.paused:
+            rectified_direction = move_sprite(self.player, self.walls, direction)
+            self.camera_direction = -rectified_direction
 
-        Args:
-            sprite: the sprite that is being moved.
-            direction: the direction the sprite is moving in.
-
-        Returns:
-            rectified_direction: the given direction, possibly rectified to give a measure of how much the sprite has moved.
-        """
-        velocity = sprite.velocity
-        direction = sprite.check_speed(direction)
-        rectified_direction = Vector2(direction.x, direction.y)
-        # setting sprite orientation
-        if direction.x > 0:
-            sprite.image = sprite.img_left
-        elif direction.x < 0:
-            sprite.image = sprite.img_right
-
-        # horizontal collision check
-        sprite_collisions = self.check_collision(sprite, self.walls, Vector2(direction.x, 0))
-        if sprite_collisions:
-            sprite.update_velocity(Vector2(-velocity.x, 0))
-            for coll_sprite in sprite_collisions:
-                if direction.x > 0:
-                    rectified_direction.x = coll_sprite.left - sprite.right
-                    sprite.right = coll_sprite.left
-                elif direction.x < 0:
-                    rectified_direction.x = sprite.left - coll_sprite.right
-                    sprite.left = coll_sprite.right
-        else:
-            sprite.left += direction.x
-        # vertical collision check
-        sprite_collisions = self.check_collision(sprite, self.walls, Vector2(0, direction.y))
-        if sprite_collisions:
-            sprite.update_velocity(Vector2(0, -velocity.y))
-            for coll_sprite in sprite_collisions:
-                if direction.y > 0:
-                    rectified_direction.y = coll_sprite.top - sprite.bottom
-                    sprite.bottom = coll_sprite.top
-                elif direction.y < 0:
-                    rectified_direction.y = coll_sprite.bottom - sprite.top
-                    sprite.top = coll_sprite.bottom
-
-        else:
-            sprite.bottom += direction.y
-
-        return rectified_direction
+    def move_player_right(self, direction=Vector2(2, 0)):
+        if not self.paused:
+            rectified_direction = move_sprite(self.player, self.walls, direction)
+            self.camera_direction = -rectified_direction
+    
+    def mob_move(self):
+        for mob in self.mobs:
+            rectified_direction = move_sprite(mob, self.walls, mob.direction)
+            move_sprite(mob, self.walls, rectified_direction - mob.direction)
+            if sign(mob.direction.x) != sign(rectified_direction.x):
+                mob.direction = -mob.direction
 
     def collect_coins(self, direction=Vector2()):
-        sprite_collisions = self.check_collision(self.player, self.coins, direction)
+        sprite_collisions = check_collision(self.player, self.coins, direction)
         if sprite_collisions:
             for coin in sprite_collisions:
                 self.player.coins += 1
                 pygame.mixer.Sound.play(collect_coin)
-                self.deactivate_sprite(coin)
+                coin.deactivate()
         if self.player.coins == self.coin_count:
             pygame.mixer.Sound.play(game_win)
             self.game_win_flag = True
 
-    def mob_move(self):
-        for mob in self.mobs:
-            rectified_direction = self.move_sprite(mob, mob.direction)
-            self.move_sprite(mob, rectified_direction - mob.direction)
-            if sign(mob.direction.x) != sign(rectified_direction.x):
-                mob.direction = -mob.direction
-
     def mob_collide(self, direction=Vector2()):
-        sprite_collisions = self.check_collision(self.player, self.mobs, direction)
+        sprite_collisions = check_collision(self.player, self.mobs, direction)
         if sprite_collisions:
             for mob in sprite_collisions:
                 pygame.mixer.Sound.play(game_over)
-                self.deactivate_sprite(self.player)
-                # self.menu_toggle()
-
-    def deactivate_sprite(self, sprite):
-        """Deactivates a sprite, causing it to appear to jump and removing it from the game world.
-
-        Args:
-            sprite: the sprite that is deactivated.
-        """
-        sprite.active = False
-        sprite.collides = False
-        sprite.update_velocity(Vector2(0, -7))
-
-    def check_collision(self, colliding_sprite, sprites, direction=Vector2()):
-        """This method checks whether the colliding_sprite collides with any of the sprites
-        in the given sprites group if both of them are collidable objects.
-
-        Args:
-            colliding_sprite: the sprite whose collision is being checked.
-            sprites: the sprites whose collision with the colliding_sprite is being checked.
-            direction: The direction where the colliding_sprite's collisions are checked. Defaults to Vector2().
-
-        Returns:
-            sprite_collisions: a list of the collisions that occurred, if any did.
-        """
-        if not colliding_sprite.collides:
-            return False
-        colliding_sprite.update_pos(direction)
-        collidable_sprites = filter(self.sprite_collides, sprites)
-        sprite_collisions = pygame.sprite.spritecollide(colliding_sprite, collidable_sprites, False)
-        colliding_sprite.update_pos(-direction)
-        return sprite_collisions
-
-    def sprite_touches_floor(self, sprite):
-        """Checks whether the given sprite is currently touching the floor.
-
-        Args:
-            sprite: the sprite that is being checked.
-
-        Returns:
-            bool: boolean value indicating whether the sprite touches the floor.
-        """
-        if self.check_collision(sprite, self.walls, Vector2(0, 1)):
-            return True
-        return False
+                self.player.deactivate()
 
     def create(self, level_map):
         """This method sets up the level from the map data.
@@ -321,9 +195,7 @@ class Level:
 
         self.interactive_objects.add(self.player, self.coins, self.mobs)
         self.all_sprites.add(self.walls, self.interactive_objects)
-        self.create_buttons()
-
-        
+        self.create_buttons()        
 
     def create_buttons(self):
         """Creates the Button sprites that can be shown to the player
@@ -336,16 +208,6 @@ class Level:
         self.game_win_btn = Button((SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 12), "game_win.png", "game_win")
         self.game_over_btn = Button((SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 12), "game_over.png", "game_over")
         self.menu_buttons.add(resume_btn, self.restart_btn, save_btn, quit_btn)
-
-    def move_player_left(self, direction=Vector2(-2, 0)):
-        if not self.paused:
-            rectified_direction = self.move_sprite(self.player, direction)
-            self.camera_direction = -rectified_direction
-
-    def move_player_right(self, direction=Vector2(2, 0)):
-        if not self.paused:
-            rectified_direction = self.move_sprite(self.player, direction)
-            self.camera_direction = -rectified_direction
 
     def button_clicked(self, pos):
         """This method check whether the player has clicked on a button and calls the appropriat function if so.
@@ -365,11 +227,35 @@ class Level:
                     elif button.name == "quit":
                         quit()
 
-    def restart(self):
-        """Re-initialises the instance and restarts the game.
-        """
-        self.__init__(self.level_map, self.surface)
+    def set_state(self, game_state):
+        """This method reloads information from a game_state object to enable loading games from memory.
 
+        Args:
+            game_state: a game_state object.
+        """
+
+        self.player = Player(game_state["player"]["pos"])
+        for attribute in game_state["player"]:
+            if attribute != "pos":
+                vars(self.player)[attribute] = game_state["player"][attribute]
+        
+        self.mobs.add(self.create_sprites_from_game_state(game_state["mobs"], Mob))
+        self.walls.add(self.create_sprites_from_game_state(game_state["walls"], Wall))
+        self.coins.add(self.create_sprites_from_game_state(game_state["coins"], Coin))
+
+        self.interactive_objects.add(self.player, self.coins, self.mobs)
+        self.all_sprites.add(self.walls, self.interactive_objects)
+        self.create_buttons()  
+
+    def create_sprites_from_game_state(self, sprite_state_list, Tile):
+        tiles = []
+        for saved_tile in sprite_state_list:
+            tile = Tile(saved_tile["pos"])
+            for attribute in saved_tile:
+                if attribute != "pos":
+                    vars(tile)[attribute] = saved_tile[attribute]
+            tiles.append(tile)
+        return tiles 
 
     def get_state(self):
         data = {
@@ -387,5 +273,7 @@ class Level:
         }
         return data
 
-    def sprite_collides(self, sprite):
-        return sprite.collides
+    def restart(self):
+        """Re-initialises the instance and restarts the game.
+        """
+        self.__init__(self.level_map, self.surface)

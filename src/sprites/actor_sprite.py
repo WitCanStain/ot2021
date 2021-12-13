@@ -33,6 +33,27 @@ class ActorSprite(GameSprite):
     def update_velocity(self, velocity):
         self.velocity = self.check_speed(self.velocity + velocity)
 
+    def deactivate(self):
+        """Deactivates a sprite, causing it to appear to jump and removing it from the game world.
+        """
+        self.active = False
+        self.collides = False
+        self.update_velocity(Vector2(0, -7))
+
+    # def touches_floor(self, tiles):
+    #     """Checks whether the given sprite is currently touching the floor.
+
+    #     Args:
+    #         tiles: the tiles that are considered floor
+
+    #     Returns:
+    #         bool: boolean value indicating whether the sprite touches the floor.
+    #     """
+        
+    #     if self.check_collision(sprite, self.walls, Vector2(0, 1)):
+    #         return True
+    #     return False
+
     def get_state(self):
         """Returns the instance variables alongside the parent class' variables.
 
