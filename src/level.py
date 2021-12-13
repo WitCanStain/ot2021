@@ -161,6 +161,11 @@ class Level:
 
 
     def apply_gravity(self, sprites):
+        """Applies gravity to all given sprites.
+
+        Args:
+            sprites: a group or list of sprites to which gravity is being applied.
+        """
         for sprite in sprites:
             sprite.update_velocity(Vector2(0, GRAVITY))
             velocity = sprite.velocity
@@ -247,6 +252,11 @@ class Level:
                 # self.menu_toggle()
 
     def deactivate_sprite(self, sprite):
+        """Deactivates a sprite, causing it to appear to jump and removing it from the game world.
+
+        Args:
+            sprite: the sprite that is deactivated.
+        """
         sprite.active = False
         sprite.collides = False
         sprite.update_velocity(Vector2(0, -7))
@@ -272,6 +282,14 @@ class Level:
         return sprite_collisions
 
     def sprite_touches_floor(self, sprite):
+        """Checks whether the given sprite is currently touching the floor.
+
+        Args:
+            sprite: the sprite that is being checked.
+
+        Returns:
+            bool: boolean value indicating whether the sprite touches the floor.
+        """
         if self.check_collision(sprite, self.walls, Vector2(0, 1)):
             return True
         return False
@@ -308,6 +326,8 @@ class Level:
         
 
     def create_buttons(self):
+        """Creates the Button sprites that can be shown to the player
+        """
         resume_btn  = Button((SCREEN_WIDTH / 2 - MENU_BTN_WIDTH / 2, SCREEN_HEIGHT / 4), "resume_btn.png", "resume")
         self.restart_btn = Button((SCREEN_WIDTH / 2 - MENU_BTN_WIDTH / 2, resume_btn.bottom + 3), "restart_btn.png", "restart")
         save_btn = Button((SCREEN_WIDTH / 2 - MENU_BTN_WIDTH / 2, self.restart_btn.bottom + 3), "save_btn.png", "save")

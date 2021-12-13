@@ -33,6 +33,11 @@ class GameLoop:
 
 
     def handle_events(self):
+        """Check what input the player gives and call appropriate functions.
+
+        Returns:
+            bool: boolean value indicating whether the player has closed the game.
+        """
         keys = pygame.key.get_pressed()
         if keys[K_LEFT]:
             self.level.move_player_left()
