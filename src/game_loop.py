@@ -63,6 +63,14 @@ class GameLoop:
         pygame.display.update()
 
     def scale_mouse(self, pos):
+        """Scales mouse coordinates so that the correct coordinates are produced even if player resizes window.
+
+        Args:
+            pos: position of the mouse cursor.
+
+        Returns:
+            scaled_pos: the scaled coordinates of the mouse cursor.
+        """
         ratio_x = self.screen.get_rect().width / self.fake_screen.get_rect().width
         ratio_y = self.screen.get_rect().height / self.fake_screen.get_rect().height
         scaled_pos = Vector2(pos[0] / ratio_x, pos[1] / ratio_y)
