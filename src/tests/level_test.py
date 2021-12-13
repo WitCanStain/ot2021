@@ -30,7 +30,7 @@ class TestLevel(unittest.TestCase):
         self.assertTrue(level.game_over_flag)
 
     def test_can_save_game(self):
-        level = Level(test_map_save, self.screen)
+        level = Level(test_map_two_coins, self.screen)
         level.draw()
         level.move_player_left()
         level.draw()
@@ -44,4 +44,12 @@ class TestLevel(unittest.TestCase):
         level = Level(level_map, self.screen, game_state)
         self.assertEqual(len(level.coins), 3)
 
+    def test_restarting_recreates_coins(self):
+        level = Level(test_map_two_coins, self.screen)
+        level.draw()
+        level.move_player_left()
+        level.draw()
+        level.draw()
+        level.restart()
+        self.assertEqual(len(level.coins), 2)
     

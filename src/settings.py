@@ -34,7 +34,7 @@ test_map_mob = [
 '000'
 ]
 
-test_map_save = [
+test_map_two_coins = [
 '221 ',
 '0000'
 ]
