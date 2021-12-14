@@ -2,8 +2,8 @@ import os
 import unittest
 import pygame
 from game_loop import GameLoop
-from level import Level
-from game_utils.settings import *
+from gamelogic.level import Level
+from utils.settings import *
 
 
 class TestGameLoop(unittest.TestCase):

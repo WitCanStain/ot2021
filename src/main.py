@@ -1,6 +1,6 @@
 import sys
 import pygame
-from game_logic.game_loop import GameLoop
+from game_loop import GameLoop
 
 def main(argv):
     pygame.init()

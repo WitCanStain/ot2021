@@ -1,6 +1,6 @@
 import pygame
 from pygame import Vector2
-from game_utils.settings import GRAVITY
+from utils.settings import GRAVITY
 
 def check_collision(colliding_sprite, sprites, direction=Vector2()):
     """This method checks whether the colliding_sprite collides with any of the sprites

@@ -7,10 +7,10 @@ from sprites.player import Player
 from sprites.coin import Coin
 from sprites.mob import Mob
 from sprites.button import Button
-from game_utils.game_save import GameSave
-from game_logic.physics import check_collision, move_sprite, apply_gravity, sprite_touches_floor
-from game_utils.sounds import collect_coin, game_win, game_over
-from game_utils.settings import SCREEN_HEIGHT, SCREEN_WIDTH, MENU_BTN_WIDTH, TILE_SIZE
+from utils.game_save import GameSave
+from gamelogic.physics import check_collision, move_sprite, apply_gravity, sprite_touches_floor
+from utils.sounds import collect_coin, game_win, game_over
+from utils.settings import SCREEN_HEIGHT, SCREEN_WIDTH, MENU_BTN_WIDTH, TILE_SIZE
 
 
 class Level:
@@ -32,7 +32,7 @@ class Level:
             self.mobs: pygame Group containing the mobs in the game
             self.interactive_objects: pygame Group containing all the sprites that can be
                 interacted with during gameplay.
-            self.all_sprites: pygame Group containing all non-button sprites.
+            self.all_game_sprites: pygame Group containing all non-button sprites.
             self.walls: pygame Group containing the wall tiles.
             self.menu_buttons: pygame Group containing the menu buttons.
             self.camera_direction: a vector indicating how all sprites should move in order
@@ -53,9 +53,9 @@ class Level:
         self.player = None
         self.coins = pygame.sprite.Group()
         self.mobs = pygame.sprite.Group()
-        self.interactive_objects = pygame.sprite.Group()
-        self.all_sprites = pygame.sprite.Group()
         self.walls = pygame.sprite.Group()
+        self.interactive_objects = pygame.sprite.Group()
+        self.all_game_sprites = pygame.sprite.Group()
         self.menu_buttons = pygame.sprite.Group()
         self.camera_direction = Vector2()
         self.pause_btn = None
@@ -77,37 +77,31 @@ class Level:
         movements and collision checks, and draws sprites on screen.
         """
 
-        if not self.paused:
-            apply_gravity(self.interactive_objects, self.walls)
-            self.collect_coins()
-            self.mob_move()
-            self.mob_collide()
-            self.all_sprites.update()
-            self.all_sprites.draw(self.surface)
-            for sprite in self.all_sprites:
-                sprite.left += self.camera_direction.x
-                sprite.top += self.camera_direction.y
-            self.camera_direction = Vector2()
-        else:
-            self.all_sprites.draw(self.surface)
+        if self.paused:
+            self.all_game_sprites.draw(self.surface)
             if self.menu_showing:
                 self.menu_buttons.draw(self.surface)
             else:
                 self.surface.blit(self.pause_btn.image, self.pause_btn.rect)
+        else:
+            apply_gravity(self.interactive_objects, self.walls)
+            self.collect_coins()
+            self.mob_move()
+            self.mob_collide()
+            for sprite in self.all_game_sprites:
+                sprite.left += self.camera_direction.x
+                sprite.top += self.camera_direction.y
+            self.camera_direction = Vector2()
+            self.all_game_sprites.update()
+            self.all_game_sprites.draw(self.surface)
+            
 
-        for sprite in self.interactive_objects:
-            if sprite.off_screen() and not sprite.active:
-                sprite.kill()
-                if sprite == self.player:
-                    self.game_over_flag = True
-
+        self.kill_inactive_sprites()        
 
         if self.game_win_flag:
             self.game_win()
         elif self.game_over_flag:
             self.game_over()
-
-
 
     def game_over(self):
         self.surface.fill("black")
@@ -119,6 +113,15 @@ class Level:
         self.paused = True
         self.surface.fill("black")
         self.surface.blit(self.game_win_btn.image, self.game_win_btn.rect)
+
+    def kill_inactive_sprites(self):
+        """Remove inactive sprites if they are off screen.
+        """
+        for sprite in self.interactive_objects:
+            if sprite.off_screen() and not sprite.active:
+                sprite.kill()
+                if sprite == self.player:
+                    self.game_over_flag = True
 
     def menu_toggle(self):
         if self.menu_showing:
@@ -198,7 +201,7 @@ class Level:
                     self.mobs.add(Mob(Vector2(norm_x, norm_y)))
 
         self.interactive_objects.add(self.player, self.coins, self.mobs)
-        self.all_sprites.add(self.walls, self.interactive_objects)
+        self.all_game_sprites.add(self.walls, self.interactive_objects)
         self.create_buttons()
 
     def create_buttons(self):
@@ -249,7 +252,7 @@ class Level:
         self.coins.add(self.create_sprites_from_game_state(game_state["coins"], Coin))
 
         self.interactive_objects.add(self.player, self.coins, self.mobs)
-        self.all_sprites.add(self.walls, self.interactive_objects)
+        self.all_game_sprites.add(self.walls, self.interactive_objects)
         self.create_buttons()
 
     def create_sprites_from_game_state(self, sprite_state_list, Tile):

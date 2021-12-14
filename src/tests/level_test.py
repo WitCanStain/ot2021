@@ -2,8 +2,8 @@ import os
 import unittest
 import pygame
 
-from level import Level
-from game_utils.settings import *
+from gamelogic.level import Level
+from utils.settings import *
 class TestLevel(unittest.TestCase):
     def setUp(self):
         pygame.init()

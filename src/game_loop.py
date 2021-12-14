@@ -2,9 +2,9 @@ import os
 import pygame
 from pygame.locals import HWSURFACE, DOUBLEBUF, RESIZABLE, VIDEORESIZE, K_LEFT, K_RIGHT
 from pygame import Vector2
-from game_utils.settings import SCREEN_WIDTH, SCREEN_HEIGHT, level_map
-from game_logic.level import Level
-from game_utils.game_save import GameSave
+from utils.settings import SCREEN_WIDTH, SCREEN_HEIGHT, level_map
+from gamelogic.level import Level
+from utils.game_save import GameSave
 
 
 class GameLoop:
