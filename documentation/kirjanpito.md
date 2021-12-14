@@ -21,3 +21,5 @@
 11.12. 4 tuntia - lisätty ominaisuuksia vihollisille.
 
 12.12. 10 tuntia - lisätty pelin tallentaminen ja lataaminen, sekä menu.
+
+13.13. 10 tuntia - korjattu bugeja, lisätty testejä, tehty voitto- ja häviö-ehdot.
