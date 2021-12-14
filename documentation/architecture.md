@@ -13,3 +13,11 @@ Luokkien väliset riippuvuudet on kuvattu alla olevassa luokkakaaviossa.
 ![UML graph](https://github.com/WitCanStain/ot2021/blob/master/documentation/kuvat/uml.png)
 
 ![WebSequence](https://github.com/WitCanStain/ot2021/blob/master/documentation/Moving%20the%20player%20character.png)
+
+## Sovelluslogiikka
+
+Luokka Level vastaa sovelluslogiikan eri komponenttien kokoamisesta yhteen. 
+
+Physics-moduuli sisältää spritejen liikuttamiseen ja pelin fysiikkaan tarvittavia toimintoja.
+
+
