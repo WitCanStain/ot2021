@@ -16,8 +16,18 @@ Luokkien väliset riippuvuudet on kuvattu alla olevassa luokkakaaviossa.
 
 ## Sovelluslogiikka
 
-Luokka Level vastaa sovelluslogiikan eri komponenttien kokoamisesta yhteen. 
+GameLoop-luokka luo ja käynnistää pelisilmukan, ja vastaa käyttäjän syötteiden välittämisen Level-luokalle.
+
+Luokka Level vastaa pelin tasoon liittyvistä ominaisuuksista, kuten kolikkojen keräämisestä ja vihollisiin törmäämisestä.
 
 Physics-moduuli sisältää spritejen liikuttamiseen ja pelin fysiikkaan tarvittavia toimintoja.
+
+Sounds-moduuli luo pelin äänet.
+
+Game_save-luokka hoitaa pelin tilan tallentamisen ja lataamisen.
+
+Sprites-pakkauksen luokat hoitavat pelin eri visuaalisten komponenttien luomisen.
+
+Assets-kansiossa on pelin komponenttien kuvat sekä äänet. Kuvat on tehty itse, äänet ovat ilmaiskäyttöön tarkoitettuja.
 
 

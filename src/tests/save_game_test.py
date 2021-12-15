@@ -13,6 +13,10 @@ class TestSaveGame(unittest.TestCase):
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
     def test_can_save_game(self):
+        test_map_two_coins = [
+        '0212',
+        '0000'
+        ]
         level = Level(test_map_two_coins, self.screen)
         level.draw()
         level.move_player_left()

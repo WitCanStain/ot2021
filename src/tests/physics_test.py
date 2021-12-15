@@ -7,7 +7,11 @@ class TestPhysics(unittest.TestCase):
     def setUp(self):
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.level = Level(test_map_walls, self.screen)
+        self.test_map_walls = [
+        '010',
+        '000'
+        ]
+        self.level = Level(self.test_map_walls, self.screen)
 
 
     def test_collision_detection_works(self):        

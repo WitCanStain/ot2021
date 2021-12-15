@@ -8,11 +8,25 @@ class TestLevel(unittest.TestCase):
     def setUp(self):
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.test_map_coin = [
+        '021 ',
+        '0000'
+        ]
+        self.test_map_mob = [
+        '213',
+        '000'
+        ]
+        self.test_map_two_coins = [
+        '0212',
+        '0000'
+        ]
         
 
-
     def test_player_wins_when_all_coins_are_collected(self):
-        level = Level(test_map_coin, self.screen)
+
+        
+
+        level = Level(self.test_map_coin, self.screen)
         for i in range(100):
             if not level.game_win_flag:
                 level.draw()
@@ -20,7 +34,9 @@ class TestLevel(unittest.TestCase):
         self.assertTrue(level.game_win_flag)
 
     def test_player_loses_when_collide_with_mob(self):
-        level = Level(test_map_mob, self.screen)
+        
+
+        level = Level(self.test_map_mob, self.screen)
         for i in range(100):
             if not level.game_over_flag:
                 level.draw()
@@ -29,7 +45,9 @@ class TestLevel(unittest.TestCase):
         self.assertTrue(level.game_over_flag)
 
     def test_restarting_resets_player_coins(self):
-        level = Level(test_map_two_coins, self.screen)
+
+        
+        level = Level(self.test_map_two_coins, self.screen)
         for i in range(100):
                 level.draw()
                 level.move_player_left()
@@ -38,7 +56,8 @@ class TestLevel(unittest.TestCase):
         self.assertEqual(level.player.coins, 0)
     
     def test_player_can_jump(self):
-        level = Level(test_map_coin, self.screen)
+        
+        level = Level(self.test_map_coin, self.screen)
         y_coord = level.player.rect.top
         level.player_jump()
         level.draw()
@@ -46,7 +65,7 @@ class TestLevel(unittest.TestCase):
 
     def test_menu_toggle_toggles_menu(self):
 
-        level = Level(test_map_coin, self.screen)
+        level = Level(self.test_map_coin, self.screen)
 
         level.menu_toggle()
         self.assertTrue(level.menu_showing)
@@ -56,7 +75,7 @@ class TestLevel(unittest.TestCase):
 
     def test_pause_toggle_toggles_pause(self):
 
-        level = Level(test_map_coin, self.screen)
+        level = Level(self.test_map_coin, self.screen)
 
         level.pause_toggle()
         self.assertTrue(level.paused)
