@@ -4,9 +4,9 @@ from pygame.locals import HWSURFACE, DOUBLEBUF, RESIZABLE
 from utils.settings import SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_MAP
 from utils.game_file import GameFile
 from gamelogic.level import Level
-from game_loop import GameLoop
-from renderer import Renderer
-from event_queue import EventQueue
+from gamelogic.game_loop import GameLoop
+from gamelogic.renderer import Renderer
+from gamelogic.event_queue import EventQueue
 
 def main(argv):
     save_file = None

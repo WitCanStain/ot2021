@@ -2,15 +2,15 @@ import os
 import unittest
 import pygame
 from pygame.locals import K_LEFT, K_RIGHT
-from game_loop import GameLoop
+from gamelogic.game_loop import GameLoop
 from gamelogic.level import Level
 from utils.settings import *
 from pygame.locals import HWSURFACE, DOUBLEBUF, RESIZABLE
 from gamelogic.level import Level
 from utils.game_file import GameFile
-from game_loop import GameLoop
-from renderer import Renderer
-from event_queue import EventQueue
+from gamelogic.game_loop import GameLoop
+from gamelogic.renderer import Renderer
+from gamelogic.event_queue import EventQueue
 from utils.scale_mouse import scale_mouse
 
 class EventQueueStub:
