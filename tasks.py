@@ -1,10 +1,12 @@
 from invoke import task
 
 @task
-def start(ctx, file=None):
+def start(ctx, s=None, l=None):
     cmd = None
-    if file:
-        cmd = "python3 src/main.py" + f" {file}"
+    if s:
+        cmd = "python3 src/main.py" + f" s={s}"
+    elif l:
+        cmd = "python3 src/main.py" + f" l={l}"
     else:
         cmd = "python3 src/main.py"
     ctx.run(cmd)

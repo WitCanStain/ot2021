@@ -44,16 +44,17 @@ class TestLevel(unittest.TestCase):
 
         self.assertTrue(level.game_over_flag)
 
-    def test_restarting_resets_player_coins(self):
+    def test_restarting_resets_coins(self):
 
-        
         level = Level(self.test_map_two_coins, self.screen)
+        self.assertEqual(len(level.coins), 2)
+
         for i in range(100):
                 level.draw()
                 level.move_player_left()
-        self.assertEqual(level.player.coins, 1)
+        self.assertEqual(len(level.coins), 1)
         level.restart()
-        self.assertEqual(level.player.coins, 0)
+        self.assertEqual(len(level.coins), 2)
     
     def test_player_can_jump(self):
         

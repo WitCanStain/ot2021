@@ -7,21 +7,21 @@ from sprites.player import Player
 from sprites.coin import Coin
 from sprites.mob import Mob
 from sprites.button import Button
-from utils.game_save import GameSave
+from utils.game_file import GameSave
 from gamelogic.physics import check_collision, move_sprite, apply_gravity, sprite_touches_floor
 from utils.sounds import collect_coin, game_win, game_over
 from utils.settings import SCREEN_HEIGHT, SCREEN_WIDTH, MENU_BTN_WIDTH, TILE_SIZE
 
 
 class Level:
-    """This class contains most of the important functionality for running the game,
+    """This class contains much of the important functionality for running the game,
     such as lists of sprites in the world and methods for changing the game state.
     """
-    def __init__(self, level_map, surface, game_state=None):
+    def __init__(self, LEVEL_MAP, surface, game_state=None):
         """Initialise the instance.
 
         Args:
-            level_map: the level map used to generate the game world.
+            LEVEL_MAP: the level map used to generate the game world.
             surface: the screen that all sprites will be drawn on.
             game_state: object containing game state information. If present, load
                 information into instance. Defaults to None.
@@ -49,7 +49,7 @@ class Level:
         """
 
         self.surface = surface
-        self.level_map = level_map
+        self.LEVEL_MAP = LEVEL_MAP
         self.level_bottom = None
         self.player = None
         self.coins = pygame.sprite.Group()
@@ -70,7 +70,7 @@ class Level:
         if game_state:
             self.set_state(game_state)
         else:
-            self.create(self.level_map)
+            self.create(self.LEVEL_MAP)
         self.coin_count = len(self.coins)
 
     def draw(self):
@@ -164,10 +164,9 @@ class Level:
         sprite_collisions = check_collision(self.player, self.coins, direction)
         if sprite_collisions:
             for coin in sprite_collisions:
-                self.player.coins += 1
                 pygame.mixer.Sound.play(collect_coin)
                 coin.deactivate()
-        if self.player.coins == self.coin_count:
+        if len(self.coins) == 0:
             pygame.mixer.Sound.play(game_win)
             self.game_win_flag = True
 
@@ -176,21 +175,21 @@ class Level:
         if sprite_collisions:
             self.player.deactivate()
 
-    def create(self, level_map):
+    def create(self, LEVEL_MAP):
         """This method sets up the level from the map data.
 
         Args:
-            level_map: a list that is being interpreted as a map.
+            LEVEL_MAP: a list that is being interpreted as a map.
         """
-        height = len(level_map)
-        width = len(level_map[0])
+        height = len(LEVEL_MAP)
+        width = len(LEVEL_MAP[0])
         self.level_bottom = height * TILE_SIZE
         for y in range(height):
             for x in range(width):
                 norm_x = x * TILE_SIZE
                 norm_y = y * TILE_SIZE
 
-                cell = level_map[y][x]
+                cell = LEVEL_MAP[y][x]
 
                 if cell == '0':
                     self.walls.add(Wall(Vector2(norm_x, norm_y)))
@@ -242,7 +241,7 @@ class Level:
         Args:
             game_state: a game_state object.
         """
-
+        self.level_bottom = game_state["level_bottom"]
         self.player = Player(game_state["player"]["pos"])
         for attribute in game_state["player"]:
             if attribute != "pos":
@@ -272,12 +271,13 @@ class Level:
             "mobs": [mob.get_state() for mob in self.mobs],
             "coins": [coin.get_state() for coin in self.coins],
             "walls": [wall.get_state() for wall in self.walls],
-            "level_map": self.level_map,
+            "LEVEL_MAP": self.LEVEL_MAP,
             "camera_direction": self.camera_direction,
             "menu_showing": self.menu_showing,
             "paused": self.paused,
             "game_win_flag": self.game_win_flag,
-            "game_over_flag": self.game_over_flag
+            "game_over_flag": self.game_over_flag,
+            "level_bottom": self.level_bottom
 
         }
         return data
@@ -285,4 +285,4 @@ class Level:
     def restart(self):
         """Re-initialises the instance and restarts the game.
         """
-        self.__init__(self.level_map, self.surface)
+        self.__init__(self.LEVEL_MAP, self.surface)

@@ -2,7 +2,7 @@ import os
 import unittest
 import pygame
 from gamelogic.level import Level
-from utils.game_save import GameSave
+from utils.game_file import GameSave
 from utils.settings import *
 
 
@@ -28,5 +28,5 @@ class TestSaveGame(unittest.TestCase):
         dirname = os.path.dirname(__file__)
         path = os.path.join(dirname, "..", "saved_games", "testsave")
         game_state = GameSave.load_game(path)
-        level = Level(level_map, self.screen, game_state)
+        level = Level(LEVEL_MAP, self.screen, game_state)
         self.assertEqual(len(level.coins), 3)

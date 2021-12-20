@@ -2,26 +2,29 @@ import os
 import pygame
 from pygame.locals import HWSURFACE, DOUBLEBUF, RESIZABLE, VIDEORESIZE, K_LEFT, K_RIGHT
 from pygame import Vector2
-from utils.settings import SCREEN_WIDTH, SCREEN_HEIGHT, level_map
+from utils.settings import SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_MAP
 from gamelogic.level import Level
-from utils.game_save import GameSave
+from utils.game_file import GameSave
 
 
 class GameLoop:
-    def __init__(self, save_file=None):
+    def __init__(self, save_file=None, level_map=None):
 
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), HWSURFACE|DOUBLEBUF|RESIZABLE)
         pygame.display.set_caption("OT Platformer")
         self.fake_screen = self.screen.copy()
         self.clock = pygame.time.Clock()
         if save_file:
-            dirname = os.path.dirname(__file__)
-            path = os.path.join(dirname, "..", "saved_games", save_file)
-            game_state = GameSave.load_game(path)
-            saved_level_map = game_state["level_map"]
-            self.level = Level(saved_level_map, self.fake_screen, game_state)
+            game_state = GameSave.load_game(save_file)
+            if game_state:
+                saved_LEVEL_MAP = game_state["LEVEL_MAP"]
+                self.level = Level(saved_LEVEL_MAP, self.fake_screen, game_state)
+        elif level_map:
+            level_map = GameSave.generate_level_map_from_file(level_map)
+            if level_map:
+                self.level = Level(level_map, self.fake_screen)
         else:
-            self.level = Level(level_map, self.fake_screen)
+            self.level = Level(LEVEL_MAP, self.fake_screen)
 
     def start(self):
         while True:
@@ -52,6 +55,8 @@ class GameLoop:
                     self.level.menu_toggle()
                 elif event.key == pygame.K_p:
                     self.level.pause_toggle()
+                elif event.key == pygame.K_r:
+                    self.level.restart()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.level.button_clicked(self.scale_mouse(event.pos))

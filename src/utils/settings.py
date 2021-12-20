@@ -1,4 +1,4 @@
-level_map = [
+LEVEL_MAP = [
 '                              ',
 '                              ',
 '                   2          ',
