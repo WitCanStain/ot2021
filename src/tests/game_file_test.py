@@ -2,11 +2,11 @@ import os
 import unittest
 import pygame
 from gamelogic.level import Level
-from utils.game_file import GameSave
+from utils.game_file import GameFile
 from utils.settings import *
 
 
-class TestSaveGame(unittest.TestCase):
+class TestGameFile(unittest.TestCase):
 
     def setUp(self):
         pygame.init()
@@ -22,11 +22,11 @@ class TestSaveGame(unittest.TestCase):
         level.move_player_left()
         level.draw()
         level.draw()
-        self.assertTrue(GameSave.save_game(level.get_state()))
+        self.assertTrue(GameFile.save_game(level.get_state(), "testsave"))
 
     def test_can_load_game(self):
         dirname = os.path.dirname(__file__)
         path = os.path.join(dirname, "..", "saved_games", "testsave")
-        game_state = GameSave.load_game(path)
+        game_state = GameFile.load_game(path)
         level = Level(LEVEL_MAP, self.screen, game_state)
-        self.assertEqual(len(level.coins), 3)
+        self.assertEqual(len(level.coins), 2)

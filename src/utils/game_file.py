@@ -3,9 +3,9 @@ import pickle
 from datetime import datetime
 dirname = os.path.dirname(__file__)
 
-class GameSave():
+class GameFile():
 
-    def save_game(game_state):
+    def save_game(game_state, save_file_name=None):
         """Serialises the game state into an output file.
 
         Args:
@@ -15,9 +15,9 @@ class GameSave():
             bool: A boolean value indicating success or failure.
         """
         try:
-            time = datetime.now()
-            save_file_name = f"""ot_platformer_{str(time.year)}_{str(time.month)}_
-             {str(time.day)}_{str(time.hour)}_{str(time.minute)}_{str(time.second)}"""
+            if not save_file_name:
+                time = datetime.now()
+                save_file_name = f"""ot_platformer_{str(time.year)}_{str(time.month)}_{str(time.day)}_{str(time.hour)}_{str(time.minute)}_{str(time.second)}"""
 
             path = os.path.join(dirname, "..", "saved_games", save_file_name)
             with open(path, "wb") as file:

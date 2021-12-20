@@ -1,7 +1,7 @@
 import os
 import unittest
 import pygame
-
+from pygame import Vector2
 from gamelogic.level import Level
 from utils.settings import *
 class TestLevel(unittest.TestCase):
@@ -83,4 +83,12 @@ class TestLevel(unittest.TestCase):
 
         level.pause_toggle()
         self.assertFalse(level.paused)
+
+    def test_clicking_on_resume_button_resumes_game(self):
+        level = Level(self.test_map_coin, self.screen)
+        self.assertFalse(level.menu_showing)
+        level.menu_toggle()
+        self.assertTrue(level.menu_showing)
+        level.button_clicked(Vector2(level.resume_btn.left + 2, level.resume_btn.top + 2))
+        self.assertFalse(level.menu_showing)
 

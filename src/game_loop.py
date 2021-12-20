@@ -1,88 +1,62 @@
-import os
 import pygame
 from pygame.locals import HWSURFACE, DOUBLEBUF, RESIZABLE, VIDEORESIZE, K_LEFT, K_RIGHT
-from pygame import Vector2
-from utils.settings import SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_MAP
-from gamelogic.level import Level
-from utils.game_file import GameSave
+from utils.scale_mouse import scale_mouse
 
 
 class GameLoop:
-    def __init__(self, save_file=None, level_map=None):
+    """This class is responsible for the main loop of the program, which consists of running the 
+    renderer every frame and waiting for user input.
+    """
+    def __init__(self, renderer, event_queue, level, screen, fake_screen):
 
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), HWSURFACE|DOUBLEBUF|RESIZABLE)
-        pygame.display.set_caption("OT Platformer")
-        self.fake_screen = self.screen.copy()
-        self.clock = pygame.time.Clock()
-        if save_file:
-            game_state = GameSave.load_game(save_file)
-            if game_state:
-                saved_LEVEL_MAP = game_state["LEVEL_MAP"]
-                self.level = Level(saved_LEVEL_MAP, self.fake_screen, game_state)
-        elif level_map:
-            level_map = GameSave.generate_level_map_from_file(level_map)
-            if level_map:
-                self.level = Level(level_map, self.fake_screen)
-        else:
-            self.level = Level(LEVEL_MAP, self.fake_screen)
+        self._clock = pygame.time.Clock()
+        self._renderer = renderer
+        self._event_queue = event_queue
+        self._level = level
+        self.screen = screen
+        self.fake_screen = fake_screen
 
     def start(self):
         while True:
-            if self.handle_events() is False:
+            if self._handle_events() is False:
                 break
+            self._render()
+            self._clock.tick(60)
 
-            self.render()
-            self.clock.tick(60)
 
-
-    def handle_events(self):
+    def _handle_events(self):
         """Check what input the player gives and call appropriate functions.
 
         Returns:
             bool: boolean value indicating whether the player has closed the game.
         """
-        keys = pygame.key.get_pressed()
+        keys = self._event_queue.get_pressed()
         if keys[K_LEFT]:
-            self.level.move_player_left()
-        if keys[K_RIGHT]:
-            self.level.move_player_right()
-        for event in pygame.event.get():
+            self._level.move_player_left()
+        elif keys[K_RIGHT]:
+            self._level.move_player_right()
+        
+        for event in self._event_queue.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
-                    self.level.player_jump()
+                    self._level.player_jump()
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_ESCAPE:
-                    self.level.menu_toggle()
+                    self._level.menu_toggle()
                 elif event.key == pygame.K_p:
-                    self.level.pause_toggle()
+                    self._level.pause_toggle()
                 elif event.key == pygame.K_r:
-                    self.level.restart()
+                    self._level.restart()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    self.level.button_clicked(self.scale_mouse(event.pos))
+                    self._level.button_clicked(scale_mouse(event.pos, self.screen, self.fake_screen))
             elif event.type == VIDEORESIZE:
                 self.screen = pygame.display.set_mode(event.size, HWSURFACE|DOUBLEBUF|RESIZABLE)
             elif event.type == pygame.QUIT:
                 return False
         return True
 
-    def render(self):
-        self.fake_screen.fill((135, 206, 250))
-        self.level.draw()
-        self.screen.blit(pygame.transform.scale(self.fake_screen, self.screen.get_rect().size), (0, 0))
-        pygame.display.update()
+    def _render(self):
+        self._renderer.render()
 
-    def scale_mouse(self, pos):
-        """Scales mouse coordinates so that the correct coordinates are produced even if
-        player resizes window.
-
-        Args:
-            pos: position of the mouse cursor.
-
-        Returns:
-            scaled_pos: the scaled coordinates of the mouse cursor.
-        """
-        ratio_x = self.screen.get_rect().width / self.fake_screen.get_rect().width
-        ratio_y = self.screen.get_rect().height / self.fake_screen.get_rect().height
-        scaled_pos = Vector2(pos[0] / ratio_x, pos[1] / ratio_y)
-        return scaled_pos
+    

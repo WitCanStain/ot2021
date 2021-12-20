@@ -7,7 +7,7 @@ from sprites.player import Player
 from sprites.coin import Coin
 from sprites.mob import Mob
 from sprites.button import Button
-from utils.game_file import GameSave
+from utils.game_file import GameFile
 from gamelogic.physics import check_collision, move_sprite, apply_gravity, sprite_touches_floor
 from utils.sounds import collect_coin, game_win, game_over
 from utils.settings import SCREEN_HEIGHT, SCREEN_WIDTH, MENU_BTN_WIDTH, TILE_SIZE
@@ -58,6 +58,7 @@ class Level:
         self.all_game_sprites = pygame.sprite.Group()
         self.menu_buttons = pygame.sprite.Group()
         self.camera_direction = Vector2()
+        self.resume_btn = None
         self.pause_btn = None
         self.restart_btn = None
         self.game_win_btn = None
@@ -208,14 +209,14 @@ class Level:
         """Creates the Button sprites that can be shown to the player
         """
         menu_button_x_pos = SCREEN_WIDTH / 2 - MENU_BTN_WIDTH / 2
-        resume_btn = Button((menu_button_x_pos, SCREEN_HEIGHT / 4), "resume_btn.png", "resume")
-        self.restart_btn = Button((menu_button_x_pos, resume_btn.bottom + 3), "restart_btn.png", "restart")
+        self.resume_btn = Button((menu_button_x_pos, SCREEN_HEIGHT / 4), "resume_btn.png", "resume")
+        self.restart_btn = Button((menu_button_x_pos, self.resume_btn.bottom + 3), "restart_btn.png", "restart")
         save_btn = Button((menu_button_x_pos, self.restart_btn.bottom + 3), "save_btn.png", "save")
         quit_btn = Button((menu_button_x_pos, save_btn.bottom + 3), "quit_btn.png", "quit")
         self.pause_btn = Button((SCREEN_WIDTH - 64, 30), "pause_btn.png", "pause")
         self.game_win_btn = Button((SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 12), "game_win.png", "game_win")
         self.game_over_btn = Button((SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 12), "game_over.png", "game_over")
-        self.menu_buttons.add(resume_btn, self.restart_btn, save_btn, quit_btn)
+        self.menu_buttons.add(self.resume_btn, self.restart_btn, save_btn, quit_btn)
 
     def button_clicked(self, pos):
         """This method check whether the player has clicked on a button and calls the appropriat function if so.
@@ -231,7 +232,7 @@ class Level:
                     elif button.name == "restart":
                         self.restart()
                     elif button.name == "save":
-                        GameSave.save_game(self.get_state())
+                        GameFile.save_game(self.get_state())
                     elif button.name == "quit":
                         sys.exit()
 
