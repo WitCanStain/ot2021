@@ -1,6 +1,6 @@
 # OT-platformer
 
-Ohjelma on peli, jossa napataan kolikoita ja vältellään vihollisia. Pelihahmoa voi liikuttaa nuolinäppäimillä ylös, alas, tai sivuille. Pelin voi sulkea painamalla ruksia ikkunan nurkassa, valitsemalla valikosta Quit-nappula tai painamalla CTRL+C komentolinjalla. Valikon saa avattua ESC-näppäimellä.
+Ohjelma on peli, jossa napataan kolikoita ja vältellään vihollisia. Pelihahmoa voi liikuttaa nuolinäppäimillä sivuille, ja sillä voi hypätä. Pelin voi sulkea painamalla ruksia ikkunan nurkassa, valitsemalla valikosta Quit-nappula tai painamalla CTRL+C komentolinjalla. Valikon saa avattua ESC-näppäimellä.
 
 ## Dokumentaatio
 
@@ -20,7 +20,9 @@ Ohjelma on peli, jossa napataan kolikoita ja vältellään vihollisia. Pelihahmo
 
 Projektin voi suorittaa ajamalla komento `poetry run invoke start`. 
 
-Tallennetun pelin voi ladata vivulla `--file=[tiedoston nimi]`
+Tallennetun pelin voi ladata vivulla `-s [tiedoston nimi saved_games kansiossa tai polku tiedostoon]`
+
+Oman tasonsa voi ladata vivulla `-l [tiedoston nimi level_maps kansiossa tai polku tiedostoon]`
 
 ## Testaus
 
@@ -34,7 +36,7 @@ Tämä reportti luodaan htmlcov-hakemistoon.
 
 ## Pylint
 
-Pylint-testin voi suorittaa komennolla 
+Pylint-testin voi suorittaa komennolla `poetry run invoke lint`.
 
 
 
