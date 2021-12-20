@@ -24,7 +24,7 @@ class Level:
             LEVEL_MAP: the level map used to generate the game world.
             surface: the screen that all sprites will be drawn on.
             game_state: object containing game state information. If present, load
-                information into instance. Defaults to None.
+                information into instance from game_state instead of LEVEL_MAP. Defaults to None.
 
         Attributes:
             self.player: the player sprite.
@@ -36,7 +36,7 @@ class Level:
             self.walls: pygame Group containing the wall tiles.
             self.menu_buttons: pygame Group containing the menu buttons.
             self.camera_direction: a vector indicating how all sprites should move in order
-                to simulate the effect of the player moving.
+                to simulate the effect of the player camera moving.
             self.pause_btn: button that shows when game is paused.
             self.restart_btn: a menu button that shows when menu is on and when the game is over.
             self.game_win_btn: a Button object that shows on screen when the player wins.
@@ -197,8 +197,9 @@ class Level:
                     self.coins.add(Coin(Vector2(norm_x, norm_y)))
                 elif cell == '3':
                     self.mobs.add(Mob(Vector2(norm_x, norm_y)))
-        camera_x_shift = SCREEN_WIDTH / 2 - self.player.right
-        self.camera_direction = Vector2(camera_x_shift, 0)
+
+        camera_center_x = SCREEN_WIDTH / 2 - self.player.right
+        self.camera_direction = Vector2(camera_center_x, 0)
         self.interactive_objects.add(self.player, self.coins, self.mobs)
         self.all_game_sprites.add(self.walls, self.interactive_objects)
         self.create_buttons()

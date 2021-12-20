@@ -1,12 +1,12 @@
 import os
 import pickle
-
+from datetime import datetime
 dirname = os.path.dirname(__file__)
 
 class GameSave():
 
     def save_game(game_state):
-        """Serialises the game_state into an output file.
+        """Serialises the game state into an output file.
 
         Args:
             game_state: game state data.
@@ -15,17 +15,21 @@ class GameSave():
             bool: A boolean value indicating success or failure.
         """
         try:
-            path = os.path.join(dirname, "..", "saved_games", "savegame")
+            time = datetime.now()
+            save_file_name = f"""ot_platformer_{str(time.year)}_{str(time.month)}_
+             {str(time.day)}_{str(time.hour)}_{str(time.minute)}_{str(time.second)}"""
+
+            path = os.path.join(dirname, "..", "saved_games", save_file_name)
             with open(path, "wb") as file:
                 pickle.dump(game_state, file)
             return True
-        except:
+        except Exception as error:
             print(error)
             print("Something went wrong - saving was unsuccessful!")
             return False
 
     def load_game(save_file):
-        """Loads game state data from the given save_file, attempting to first load the file as a path and then
+        """Loads game state data from the given save file, attempting to first load the file as a path and then
         as a file within the save_games directory.
 
         Args:
@@ -51,7 +55,7 @@ class GameSave():
             return False
 
     def generate_level_map_from_file(map_file):
-        """Generates a level map from the given file, attempting to first load the file as a path and then
+        """Generates a level map from the given map file, attempting to first load the file as a path and then
         as a file within the level_maps directory.
 
         Args:
