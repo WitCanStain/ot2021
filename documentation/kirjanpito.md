@@ -22,4 +22,12 @@
 
 12.12. 10 tuntia - lisätty pelin tallentaminen ja lataaminen, sekä menu.
 
-13.13. 10 tuntia - korjattu bugeja, lisätty testejä, tehty voitto- ja häviö-ehdot.
+13.12. 10 tuntia - korjattu bugeja, lisätty testejä, tehty voitto- ja häviö-ehdot.
+
+14.12. 5 tuntia - lisätty dokumentaatiota.
+
+19.12. 5 tuntia - tehty korjauksia, lisätty ominaisuuksia (pelitason alle putoaminen lopettaa pelin, voi ladata oman tasonsa), lisätty testejä, muokattu koodin ja pakkausten rakennetta.
+
+20.12 7 tuntia - korjattu testejä, lisätty dokumentaatiota.
+
+Yhteensä 77 tuntia.
