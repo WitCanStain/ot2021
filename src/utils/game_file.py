@@ -43,7 +43,7 @@ class GameFile():
                 path = save_file
             else:
                 path = os.path.join(dirname, "..", "saved_games", save_file)
-            
+
             game_state = None
             with open(path, "rb") as file:
                 game_state = pickle.load(file)
@@ -60,7 +60,7 @@ class GameFile():
 
         Args:
             map_file: the map file from which data is being read.
-        
+
         Returns:
             level_map: a list object representing the generated level map.
         """
@@ -71,14 +71,10 @@ class GameFile():
             else:
                 path = os.path.join(dirname, "..", "level_maps", map_file)
             with open(path, "rb") as file:
-                level_map = [line for line in file.read().decode().splitlines()]
+                level_map = list(file.read().decode().splitlines())
                 print(level_map)
             return level_map
         except FileNotFoundError as error:
             print(error)
             print("Level map file not found! Did you type in the name correctly?")
             return False
-        
-
-
-

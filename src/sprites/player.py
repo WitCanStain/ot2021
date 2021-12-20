@@ -8,4 +8,3 @@ class Player(ActorSprite):
         path = os.path.join(dirname, "..", "assets", "ot_player_stand.png")
         max_speed = 3
         super().__init__(pos, path, max_speed)
-

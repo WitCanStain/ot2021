@@ -8,9 +8,10 @@ from sprites.coin import Coin
 from sprites.mob import Mob
 from sprites.button import Button
 from utils.game_file import GameFile
-from gamelogic.physics import check_collision, move_sprite, apply_gravity, sprite_touches_floor
 from utils.sounds import collect_coin, game_win, game_over
 from utils.settings import SCREEN_HEIGHT, SCREEN_WIDTH, MENU_BTN_WIDTH, TILE_SIZE
+from gamelogic.physics import check_collision, move_sprite, apply_gravity, sprite_touches_floor
+
 
 
 class Level:
@@ -94,9 +95,9 @@ class Level:
             self.camera_direction = Vector2()
             self.all_game_sprites.update()
             self.all_game_sprites.draw(self.surface)
-            
 
-        self.kill_sprites()        
+
+        self.kill_sprites()
 
         if self.game_win_flag:
             self.game_win()

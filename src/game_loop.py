@@ -4,7 +4,7 @@ from utils.scale_mouse import scale_mouse
 
 
 class GameLoop:
-    """This class is responsible for the main loop of the program, which consists of running the 
+    """This class is responsible for the main loop of the program, which consists of running the
     renderer every frame and waiting for user input.
     """
     def __init__(self, renderer, event_queue, level, screen, fake_screen):
@@ -35,7 +35,7 @@ class GameLoop:
             self._level.move_player_left()
         elif keys[K_RIGHT]:
             self._level.move_player_right()
-        
+
         for event in self._event_queue.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
@@ -58,5 +58,3 @@ class GameLoop:
 
     def _render(self):
         self._renderer.render()
-
-    
