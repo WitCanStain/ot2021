@@ -45,7 +45,6 @@ class Level:
             self.paused: a boolean value indicating whether the game is paused.
             self.game_win_flag: a boolean value indicating whether the game has been won.
             self.game_over_flag: a boolean value indicating whether the game has been lost.
-            self.coin_count: a number indicating the amount of coins in the level.
         """
 
         self.surface = surface
@@ -71,7 +70,6 @@ class Level:
             self.set_state(game_state)
         else:
             self.create(self.LEVEL_MAP)
-        self.coin_count = len(self.coins)
 
     def draw(self):
         """This method forms the core of the game loop. It performs various
@@ -199,7 +197,8 @@ class Level:
                     self.coins.add(Coin(Vector2(norm_x, norm_y)))
                 elif cell == '3':
                     self.mobs.add(Mob(Vector2(norm_x, norm_y)))
-
+        camera_x_shift = SCREEN_WIDTH / 2 - self.player.right
+        self.camera_direction = Vector2(camera_x_shift, 0)
         self.interactive_objects.add(self.player, self.coins, self.mobs)
         self.all_game_sprites.add(self.walls, self.interactive_objects)
         self.create_buttons()
