@@ -24,10 +24,24 @@ Physics-moduuli sisältää spritejen liikuttamiseen ja pelin fysiikkaan tarvitt
 
 Sounds-moduuli luo pelin äänet.
 
-Game_save-luokka hoitaa pelin tilan tallentamisen ja lataamisen.
+GameFile-luokka hoitaa pelin tilan tallentamisen ja lataamisen.
 
 Sprites-pakkauksen luokat hoitavat pelin eri visuaalisten komponenttien luomisen.
 
 Assets-kansiossa on pelin komponenttien kuvat sekä äänet. Kuvat on tehty itse, äänet ovat ilmaiskäyttöön tarkoitettuja.
 
+## Tietojen tallennus ja lataaminen
 
+Pelissä voi tallentaa pelin tilan ja ladata sen myöhemmin. Tämä onnistuu luokan `GameFile` avulla. Tiedostot tallennetaan oletusarvoisesti projektin kansioon nimeltä `saved_games`. Pelin tietojen serialisointiin ja deserialisointiin käytetään Pythonin `Pickle`-kirjastoa. Tallennettujen pelitiedostojen nimet ovat muotoa 
+
+`ot_platformer_2021_12_20_5_48_47`
+
+eli
+
+`ot_platformer_{vuosi}_{kuukausi}_{päivä}_{tunti}_{minuutti}`
+
+Lisäksi peliin voi ladata ulkoisesti määriteltyjä tasotiedostoja, jotka samaten tulkitaan GameFile-luokassa. Pelitilan lataaminen tapahtuu `-s`-vivun avulla komentolinjalla, ja pelitason lataaminen taas `-l`-vivun avulla.
+
+## Ohjelman rakenteeseen jääneet heikkoudet
+
+Pelin luokkarakennetta voisi standardisoida enemmän. Jotkin toiminnallisuudet ovat eriytetty omiin luokkiinsa, kun taas toiset ovat yksittäisiä funktioita joita kutsutaan toisista luokista. Lisäksi `utils`-pakkaukseen on koottu vähän löyhästi toisiinsaliittyviä moduuleja, kuten vaikka `settings.py` sekä `sounds.py`. On mahdollista että näille olisi ollut parempi paikka joko toisissa pakkauksissa tai sitten paremmin nimetyssä pakkauksessa.
