@@ -9,7 +9,7 @@ Pelin voi käynnistää ajamalla komennon `poetry run invoke start`. Jos haluaa 
 ## Pelaaminen
 
 Käyttäjä voi pelin aloitettuaan liikkua oikealle ja vasemmalle nuolinäppäimillä, ja hypätä yläuolinäppäimellä. Painamalla ESC tulee näkyviin pelin valikko, jonka 
-nappuloita painamalla voi jatkaa peliä, uudelleenkäynnistää tason, tallentaa pelin tai lopettaa pelin. Tason uudelleenkäynnistäminen toimii myös R-näppäimen kautta, mistä on hyötyä pelin voittaessaan. Tavoitteena on kerätä kaikki tason kolikot, jolloin peli loppuu.
+nappuloita painamalla voi jatkaa peliä, uudelleenkäynnistää tason, tallentaa pelin tai lopettaa pelin. Tason uudelleenkäynnistäminen toimii myös R-näppäimen kautta, mistä on hyötyä pelin voittaessaan. Tavoitteena on kerätä kaikki tason kolikot, jolloin peli loppuu. Huom! On mahdollista, että joillain Mac-koneilla ESC-nappula ei avaa valikkoa. Tämän ympäri pääsee jos muuttaa `game_loop.py`-tiedostossa rivin `if event.key == pygame.K_ESCAPE:` sisältämään `pygame.K_ESCAPE` sijasta haluamansa näppäimen, esimerkiksi `pygame.K_e` eli E-näppäimen. 
 
 Peli loppuu myös, jos pelaaja koskettaa vihreään viholliseen tai jos pelaaja putoaa tason pohjan alle. Pelin voi väliaikaisesti pysäyttää painamalla P-näppäintä. 
 Halutessaan pelin tasoa voi muuttaa editoimalla tiedoston settings.py listaa `LEVEL_MAP`, tai kuten yllä mainittu lataamalla tekstitiedostosta oman tasonsa. Näin voi vaikka muuttaa maailman rakennetta tai lisätä vihollisia tai kolikoita! Huomaa, että mikäli vihollisilla ei ole tiellään esteitä ne jatkavat matkaansa ikuisesti - varmista siis, että ne on jollain tavalla 'aidattu' pelitasoon.
