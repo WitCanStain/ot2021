@@ -50,6 +50,7 @@ class Level:
 
         self.surface = surface
         self.level_map = level_map
+        self.level_bottom = None
         self.player = None
         self.coins = pygame.sprite.Group()
         self.mobs = pygame.sprite.Group()
@@ -96,7 +97,7 @@ class Level:
             self.all_game_sprites.draw(self.surface)
             
 
-        self.kill_inactive_sprites()        
+        self.kill_sprites()        
 
         if self.game_win_flag:
             self.game_win()
@@ -114,13 +115,14 @@ class Level:
         self.surface.fill("black")
         self.surface.blit(self.game_win_btn.image, self.game_win_btn.rect)
 
-    def kill_inactive_sprites(self):
+    def kill_sprites(self):
         """Remove inactive sprites if they are off screen.
         """
         for sprite in self.interactive_objects:
-            if sprite.off_screen() and not sprite.active:
+            if (sprite.off_screen() and not sprite.active) or sprite.top > self.level_bottom:
                 sprite.kill()
                 if sprite == self.player:
+                    pygame.mixer.Sound.play(game_over)
                     self.game_over_flag = True
 
     def menu_toggle(self):
@@ -172,7 +174,6 @@ class Level:
     def mob_collide(self, direction=Vector2()):
         sprite_collisions = check_collision(self.player, self.mobs, direction)
         if sprite_collisions:
-            pygame.mixer.Sound.play(game_over)
             self.player.deactivate()
 
     def create(self, level_map):
@@ -183,7 +184,7 @@ class Level:
         """
         height = len(level_map)
         width = len(level_map[0])
-
+        self.level_bottom = height * TILE_SIZE
         for y in range(height):
             for x in range(width):
                 norm_x = x * TILE_SIZE
