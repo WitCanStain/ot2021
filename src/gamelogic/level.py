@@ -116,7 +116,8 @@ class Level:
         self.surface.blit(self.game_win_btn.image, self.game_win_btn.rect)
 
     def kill_sprites(self):
-        """Remove inactive sprites if they are off screen.
+        """Remove inactive sprites if they are off screen or any interactive sprite if
+        it has fallen below the game world  .
         """
         for sprite in self.interactive_objects:
             if (sprite.off_screen() and not sprite.active) or sprite.top > self.level_bottom:
@@ -126,6 +127,8 @@ class Level:
                     self.game_over_flag = True
 
     def menu_toggle(self):
+        """Toggle the game's menu.
+        """
         if self.menu_showing:
             self.paused = False
             self.menu_showing = False
@@ -134,26 +137,42 @@ class Level:
             self.menu_showing = True
 
     def pause_toggle(self):
+        """Toggle the game's pause state.
+        """
         if self.paused and not self.menu_showing:
             self.paused = False
         else:
             self.paused = True
 
     def player_jump(self):
+        """Make the player jump.
+        """
         if sprite_touches_floor(self.player, self.walls):
             self.player.update_velocity(Vector2(0, -10))
 
     def move_player_left(self, direction=Vector2(-2, 0)):
+        """Moves the player left by a set amount.
+
+        Args:
+            direction: what direction to move the player in and how much. Defaults to Vector2(-2, 0).
+        """
         if not self.paused:
             rectified_direction = move_sprite(self.player, self.walls, direction)
             self.camera_direction = -rectified_direction
 
     def move_player_right(self, direction=Vector2(2, 0)):
+        """Moves the player right by a set amount.
+
+        Args:
+            direction: what direction to move the player in and how much. Defaults to Vector2(-2, 0).
+        """
         if not self.paused:
             rectified_direction = move_sprite(self.player, self.walls, direction)
             self.camera_direction = -rectified_direction
 
     def mob_move(self):
+        """Move all mobs. If they run into a wall, reverse direction.
+        """
         for mob in self.mobs:
             rectified_direction = move_sprite(mob, self.walls, mob.direction)
             move_sprite(mob, self.walls, rectified_direction - mob.direction)
@@ -161,6 +180,12 @@ class Level:
                 mob.direction = -mob.direction
 
     def collect_coins(self, direction=Vector2()):
+        """Check whether the player intersects with any coins and collect them.
+        If no coins remain, game win.
+
+        Args:
+            direction: Optional vector to move the player in. Defaults to Vector2().
+        """
         sprite_collisions = check_collision(self.player, self.coins, direction)
         if sprite_collisions:
             for coin in sprite_collisions:
@@ -171,6 +196,11 @@ class Level:
             self.game_win_flag = True
 
     def mob_collide(self, direction=Vector2()):
+        """Check whether the player intersects with any mobs. If so, game lose.
+
+        Args:
+            direction: Optional vector to move the player in. Defaults to Vector2().
+        """
         sprite_collisions = check_collision(self.player, self.mobs, direction)
         if sprite_collisions:
             self.player.deactivate()
@@ -268,6 +298,11 @@ class Level:
         return tiles
 
     def get_state(self):
+        """Return the state of the level as a dictionary.
+
+        Returns:
+            data: State of the game.
+        """
         data = {
             "player": self.player.get_state(),
             "mobs": [mob.get_state() for mob in self.mobs],
