@@ -21,12 +21,9 @@ Useimmat pelin toiminnoista on testattu joko yksikkö- tai integraatiotestein. H
 
 # Järjestelmätestaus
 
-Ohjelma on järjestelmätestattu manuaalisesti.
-
-
 ## Asennus
 
-Käyttöohjeen mukaiset toimenpiteet on käyty läpi ja testattu, että niillä saadaan peli käyntiin.
+Käyttöohjeen mukaiset toimenpiteet on käyty läpi ja testattu, että niillä saadaan peli käyntiin ja sitä voi pelata.
 
 ## Tominnallisuus
 

@@ -16,6 +16,8 @@ Ohjelma on peli, jossa napataan kolikoita ja vältellään vihollisia. Pelihahmo
 
 [Viikon 5 release](https://github.com/WitCanStain/ot2021/releases/tag/viikko5b)
 
+[Loppurelease](https://github.com/WitCanStain/ot2021/releases/tag/v.1.0)
+
 ## Ohjelman suorittaminen
 
 Projektin voi suorittaa ajamalla komento `poetry run invoke start`. 
