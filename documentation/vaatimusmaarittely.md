@@ -18,15 +18,17 @@ Sovelluksessa on vain yksi käyttäjätyyppi, eli pelaaja.
 
 * Pelaaja voi siirtyä toiselle tasannolle hyppäämällä tai pudottautumalla.
 
-* pelaaja voi tallentaa pelin valikon kautta ja ladata pelin antamalla tallennustiedoston nimen käynnistyksen yhteydessä.
+* Pelaaja voi tallentaa pelin valikon kautta ja ladata pelin antamalla tallennustiedoston nimen käynnistyksen yhteydessä.
 
-* pelaaja voi uudelleenkäynnistää tason.
+* Pelaaja voi uudelleenkäynnistää tason valikon kautta tai painamalla R-näppäintä.
 
-* pelaaja voi poistua pelistä valikon kautta.
+* Pelaaja voi poistua pelistä valikon kautta.
 
-* pelaaja voi paussata pelin joko P-näppäimellä tai tuomalla valikon esiin ESC-näppäimellä.
+* Pelaaja voi paussata pelin joko P-näppäimellä tai tuomalla valikon esiin ESC-näppäimellä.
 
-* Pelaaja voi hävitä pelin osumalla viholliseen ja voittaa pelin keräämällä kaikki tason kolikot.
+* Pelaaja voi hävitä pelin osumalla viholliseen tai putoamalla tason alle, ja voittaa pelin keräämällä kaikki tason kolikot.
+
+* Pelaaja voi ladata oman tasonsa antamalla sen sisältävän tiedoston nimen käynnistyksen yhteydessä.
 
 # Jatkokehitysideoita:
 
